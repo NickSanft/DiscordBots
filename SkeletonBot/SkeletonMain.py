@@ -1,10 +1,11 @@
 import discord, sys, requests, bs4
+from discord.ext import commands
 
 from discord.ext.commands import Bot
-client = Bot(command_prefix="!skeleton")
+client = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
 BotCommands = {
-    'help': 'Displays a list of commands. You are in this one, dude.',
+    'commands': 'Displays a list of commands. You are in this one, dude.',
     'gw2': 'the bot looks up your text on the Guild Wars 2 wiki.',
     'say': 'the bot repeats whatever you say'
     }
@@ -20,27 +21,23 @@ async def on_ready():
 @client.event
 async def on_read():
     print("Client logged in")
-    
-@client.command()
-async def hello(*args):
-    return await client.say("Hello, friends.")
 
-@client.event
-async def on_message(message):
-    if message.content.startswith(client.command_prefix):
-        if(len(message.content) > len(client.command_prefix)):
-            text = message.content[len(client.command_prefix):].strip()
-            if(text.startswith('say')):
-                print("got here!")
-                await client.send_message(message.channel, text[3:])
-            elif(text.startswith('gw2')):
-                search = text[3:].strip()
-                await client.send_message(message.channel, getGWSoup(search))
-            elif(text.startswith('help')):
-                await client.send_message(message.channel, getCommands())                 
-            else:
-                print("got there!")
-                await client.send_message(message.channel, "Did not recognize command: " + text)
+"""
+@client.command()
+async def help(message):
+    await client.say(getCommands())    
+    """
+@client.command(pass_context=True)
+async def say(ctx, *, message):
+    await client.send_message(ctx.message.channel, message)
+
+@client.command(pass_context=True)
+async def gw2(ctx, *, message):
+    await client.send_message(ctx.message.channel, getGWSoup(message))
+
+@client.command(pass_context=True)
+async def commands(ctx):
+    await client.send_message(ctx.message.channel, getCommands())    
 
 
 def getCommands():
@@ -60,10 +57,11 @@ def getSoup(url):
     return soup
 
 def getGWSoup(query):
-    result = getSoup("https://wiki.guildwars2.com/wiki/" + query)
+    
+    result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
     if result == None:
         return "an error occurred getting your query, boss: " + query
-    return result.select("p")[0].getText()
+    return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
     
 client.run(sys.argv[1])
 
