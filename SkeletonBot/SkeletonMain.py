@@ -1,44 +1,69 @@
-import discord, sys, requests, bs4
+import discord, sys, WebUtils, inspect, random
 from discord.ext import commands
-
 from discord.ext.commands import Bot
-client = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
+"""
+This is the main script for the Skeleton Bot for a discord server.
+"""
+bot = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
+
+#TODO See if the list of the commands can be extracted using discord.py...
 BotCommands = {
     'commands': 'Displays a list of commands. You are in this one, dude.',
-    'gw2': 'the bot looks up your text on the Guild Wars 2 wiki.',
+    'gw2api': 'the bot looks up something using the Guild Wars 2 API.',
+    'gw2wiki': 'the bot looks up your text on the Guild Wars 2 wiki.',
     'say': 'the bot repeats whatever you say'
     }
 
-@client.event
+emotes = ["(／≧ω＼)","(´～｀ヾ)","(๑ÒωÓ๑)"]
+
+@bot.event
 async def on_ready():
     print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
+    print(bot.user.name)
+    print(bot.user.id)
     print('------')
-    await client.send_message(discord.Object(id='311702454762995714'), 'I am awake, daddy!')
+    await bot.send_message(discord.Object(id='311702454762995714'), 'I am awake, daddy!')
     
-@client.event
+@bot.event
 async def on_read():
-    print("Client logged in")
+    print("bot logged in")
 
-"""
-@client.command()
-async def help(message):
-    await client.say(getCommands())    
-    """
-@client.command(pass_context=True)
+
+@bot.command(pass_context=True)
 async def say(ctx, *, message):
-    await client.send_message(ctx.message.channel, message)
+    await bot.send_message(ctx.message.channel, message)
 
-@client.command(pass_context=True)
-async def gw2(ctx, *, message):
-    await client.send_message(ctx.message.channel, getGWSoup(message))
+@bot.command(pass_context=True)
+async def gw2wiki(ctx, *, message):
+    await bot.send_message(ctx.message.channel, WebUtils.getGWWikiHTML(message))
 
-@client.command(pass_context=True)
+@bot.group(pass_context=True)
+async def gw2api(ctx):
+    if ctx.invoked_subcommand is None:
+        await bot.send_message(ctx.message.channel, "invalid command, boss...")
+
+
+#TODO Can we possibly refactor continents() and currencies() even more?
+@gw2api.command(pass_context=True)
+async def continents(ctx):
+    me = inspect.getframeinfo(inspect.currentframe()).function
+    if len(WebUtils.getDictByName(me)) == 0:
+        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
+    WebUtils.getGW2ApiData(me)
+    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(me)))
+
+@gw2api.command(pass_context=True)
+async def currencies(ctx):
+    me = inspect.getframeinfo(inspect.currentframe()).function
+    if len(WebUtils.getDictByName(me)) == 0:
+        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
+    WebUtils.getGW2ApiData(me)
+    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(me)))    
+
+@bot.command(pass_context=True)
 async def commands(ctx):
-    await client.send_message(ctx.message.channel, getCommands())    
-
+    await bot.send_message(ctx.message.channel, getCommands())    
 
 def getCommands():
     result = ""
@@ -46,23 +71,8 @@ def getCommands():
         result += command + ": " + description + "\n"
     return result
 
-def getSoup(url):
-    try:
-        print('Downloading page %s...' % url)
-        res = requests.get(url,headers={'User-Agent': 'Mozilla/5.0'})
-        res.raise_for_status()
-    except requests.exceptions.HTTPError as err:
-        return None
-    soup = bs4.BeautifulSoup(res.text, "html.parser")
-    return soup
-
-def getGWSoup(query):
     
-    result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
-    if result == None:
-        return "an error occurred getting your query, boss: " + query
-    return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
     
-client.run(sys.argv[1])
+bot.run(sys.argv[1])
 
 
