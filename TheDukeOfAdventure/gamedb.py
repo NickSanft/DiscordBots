@@ -80,3 +80,18 @@ def update_name(id: str, name: str):
         return True
     else:
         return False
+
+# Returns the row of a character and their inventory
+def get_character(id: str):
+
+    if player_exists(id):
+        cur = con.cursor()
+
+        queryString = "SELECT * FROM Characters WHERE user_id=?"
+
+        cur.execute(queryString, (id,))
+        data = cur.fetchone()
+
+        return data
+    else:
+        return None

@@ -56,6 +56,25 @@ async def name(ctx, name: str = None):
         else:
             print("Oh god something went wrong")
 
+@bot.command(pass_context=True)
+async def summary(ctx):
+    result = gamedb.get_character(ctx.message.author.id)
+
+    if result == None:
+        await bot.say(("You're not even playing the game! "
+                       "Are you too cowardly? Too *weak*? "
+                       "Summarize yourself; there is no room for weaklings here!"))
+    else:
+        print(result)
+        msg = ("Here's a summary of your character:\n"
+              "```Name: {1}\nLevel {2}\nHealth: {4}/{5}\nFight: {6}\n"
+              "Body: {7}\nSpirit: {8}")
+        if result[3] > 0:
+            msg += "\n\nYou still have {3} unassigned ability points!```"
+        else:
+            msg += "```"
+
+        await bot.say(msg.format(*result))
 
 
 bot.run(sys.argv[1])
