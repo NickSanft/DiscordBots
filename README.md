@@ -15,7 +15,7 @@ People like using different things to get their local environment set up. Here i
  - **Atom** - This is a lightweight program/text editor with a ton of nice plugins. It was developed by the fine folks here at GitHub. ([Download](https://atom.io/))
  - **Scoop** - This is a windows utility that acts like Homebrew. It is a command line installer and  application package manager/repository. You can use it to really easily install python for windows. ([Download](http://scoop.sh/))
  - **Cmder** - This is a really nice windows terminal. Please don't use native Windows cmd. Every time you do, a puppy dies. ([Download](http://cmder.net/))
- - <add more IDEs and cool things here>
+ - _add more IDEs and cool things here..._
 
 ### Getting started:
 Here are some quick, but detailed instructions on how to get the project running locally.
@@ -26,6 +26,6 @@ Here are some quick, but detailed instructions on how to get the project running
  - Clone this repo to your local machine.
  - From the root of the project:
     - Run `./install/install.bat` (install.sh to come for Mac folks)
-    - <local database setup instructions tbd>
+    - _local database setup instructions tbd..._
     - Run the main application file with `python SkeletonMain.py <bot-token>` where the bot token is for the App you created.
 - By default the bots will listen to mentions and commands after `!skeleton`.
