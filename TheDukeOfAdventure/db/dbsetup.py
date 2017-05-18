@@ -7,6 +7,7 @@ databaseName = "game.db"
 def testDB():
     pass
 
+###############################################################
 if __name__ == "__main__":
 
     # Try to remove the database file if it already exists.
@@ -51,3 +52,4 @@ if __name__ == "__main__":
                      );"""
 
     cur.execute(queryString);
+###############################################################
