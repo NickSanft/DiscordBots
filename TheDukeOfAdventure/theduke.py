@@ -1,11 +1,11 @@
-import discord, asyncio, sys
+import discord, asyncio, sys, time
 from discord.ext import commands
 
 import gamedb
 
 #bot.get_channel('312676555514183681')
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or('!'))
+bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'))
 
 @bot.event
 async def on_ready():
@@ -21,22 +21,41 @@ async def on_message(message):
     await bot.process_commands(message)
 
 @bot.command(pass_context=True)
-async def join(ctx):
-    player_id = ctx.message.author.id
-    gamedb.add_character(player_id)
+async def join(ctx, name: str = None):
 
-@bot.command()
-async def sql_ver():
-    pass
+    if name == None:
+        await bot.say("What courage; what ENTHUSIASM! You wish to join " +
+                      "the game! ...And yet, you have not given me a name " +
+                      "by which to call you!\n\n" +
+                      "`Usage: $join <name>`")
+    else:
+        player_id = ctx.message.author.id
+        wasAdded = gamedb.add_character(player_id, name)
+
+        if wasAdded:
+            await bot.send_message(ctx.message.author, "what up")
+            await bot.say(("Welcome, {0}! I've PMed you with information "
+                          "about the game and your character!").format(name))
+        else:
+            await bot.say("You're already playing the game!")
 
 @bot.command(pass_context=True)
-async def sql3(ctx, *message: str):
-    if ctx.message.author.id == '176131629847281665':
-        cur = con.cursor()
-        cur.execute(' '.join(message))
+async def name(ctx, name: str = None):
 
-        data = cur.fetchall()
+    if name == None:
+        await bot.say(("If you'd like to change your name, you'll need "
+                       "to fill out everything correctly! :kissing_heart:\n\n"
+                       "`Usage: $name <new_name>`"))
+    else:
+        wasUpdated = gamedb.update_name(ctx.message.author.id, name)
 
-        await bot.say(data)
+        if wasUpdated:
+            await bot.say(("From this point forth, you shall be known "
+                           "as {0}! Go now, on to adventure! "
+                           "TO GLORY!").format(name))
+        else:
+            print("Oh god something went wrong")
+
+
 
 bot.run(sys.argv[1])
