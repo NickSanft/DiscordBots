@@ -1,4 +1,4 @@
-import discord, sys, WebUtils, inspect, random, DataBaseUtils
+import discord, sys, WebUtils, inspect, random, DataBaseUtils, pprint
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -71,7 +71,8 @@ async def fetchGW2Data(ctx, functionName):
     if len(WebUtils.getDictByName(functionName)) == 0:
         await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
     WebUtils.getGW2ApiData(functionName)
-    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(functionName)))  
+    text = pprint.pformat(WebUtils.getDictByName(functionName))
+    await bot.send_message(ctx.message.channel, text)  
 
 def getCommands():
     result = ""
