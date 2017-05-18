@@ -1,5 +1,5 @@
 # DiscordBots
-A place for developing Discord bots!
+A place for developing Discord bots using the [discord.py library](https://github.com/Rapptz/discord.py).
 
 ## Contributing
 We make the rules up as we go. Don't let not knowing anything about python stop you from writing an app in it. We sure didn't.
