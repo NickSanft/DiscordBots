@@ -1,8 +1,5 @@
 import requests, bs4, json, DataBaseUtils
 
-continentsDict = {}
-currenciesDict = {}
-
 gw2_api_url = "https://api.guildwars2.com/v2/"
 
 def getSoup(url):
@@ -16,7 +13,6 @@ def getSoup(url):
     return soup
 
 def getGW2ApiData(functionName):
-    print(eval(functionName + "Dict"))
     url = gw2_api_url + functionName
     soup = getSoup(url)
     itemJSON = json.loads(str(soup))
@@ -24,11 +20,8 @@ def getGW2ApiData(functionName):
     results = {}
     for item in itemJSON:
         key = str(item)
-        if key not in eval(functionName + "Dict"):
-            print("Did not have id: " + key)
-            itemSoup = json.loads(str(getSoup(url + "?id=" + key)))
-            eval(functionName + "Dict")[str(item)] = itemSoup.get('name')
-    return getDictByName(functionName)
+        itemSoup = json.loads(str(getSoup(url + "?id=" + key)))
+        DataBaseUtils.insertQuery(functionName,item,itemSoup.get('name'))
 
 def getDisplayName(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
@@ -36,10 +29,6 @@ def getDisplayName(DiscordID):
     nameJSON = json.loads(str(soup))
     #print(soup)
     return nameJSON.get('name')
-    
-def getDictByName(functionName):
-    return eval(functionName + "Dict")
-
 
 def getGWWikiHTML(query):
     result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))

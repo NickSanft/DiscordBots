@@ -1,4 +1,4 @@
-import discord, sys, WebUtils, inspect, random, DataBaseUtils, pprint
+import discord, sys, WebUtils, inspect, random, DataBaseUtils
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -52,6 +52,10 @@ async def currencies(ctx):
     await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
 
 @gw2api.command(pass_context=True)
+async def items(ctx):
+    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)    
+
+@gw2api.command(pass_context=True)
 async def register(ctx, *, message):
     DataBaseUtils.registerAPIKey(ctx.message.author.id,ctx.message.author.display_name, message)
     await bot.send_message(ctx.message.channel, "API Key Registered!")   
@@ -68,11 +72,10 @@ async def commands(ctx):
     await bot.send_message(ctx.message.channel, getCommands())
 
 async def fetchGW2Data(ctx, functionName):
-    if len(WebUtils.getDictByName(functionName)) == 0:
+    if DataBaseUtils.countQuery(functionName) == 0:
         await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
-    WebUtils.getGW2ApiData(functionName)
-    text = pprint.pformat(WebUtils.getDictByName(functionName))
-    await bot.send_message(ctx.message.channel, text)  
+        WebUtils.getGW2ApiData(functionName)
+    await bot.send_message(ctx.message.channel, DataBaseUtils.selectAllQuery(functionName))  
 
 def getCommands():
     result = ""
