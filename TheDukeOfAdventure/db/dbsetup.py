@@ -20,7 +20,7 @@ if __name__ == "__main__":
     con = sql.connect(databaseName)
     cur = con.cursor()
 
-    # Build Users
+    # Build Users table
     queryString = """CREATE TABLE IF NOT EXISTS Players (
                         user_id VARCHAR(64) NOT NULL PRIMARY KEY,
                         nickname VARCHAR(255) NOT NULL
