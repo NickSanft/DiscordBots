@@ -1,4 +1,4 @@
-import requests, bs4, json
+import requests, bs4, json, DataBaseUtils
 
 continentsDict = {}
 currenciesDict = {}
@@ -28,12 +28,23 @@ def getGW2ApiData(functionName):
             print("Did not have id: " + key)
             itemSoup = json.loads(str(getSoup(url + "?id=" + key)))
             eval(functionName + "Dict")[str(item)] = itemSoup.get('name')
+    return getDictByName(functionName)
 
+def getDisplayName(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    soup = getSoup(gw2_api_url + "account?access_token=" + APIKey)
+    nameJSON = json.loads(str(soup))
+    #print(soup)
+    return nameJSON.get('name')
+    
 def getDictByName(functionName):
-    return eval(functionName + "Dict") 
+    return eval(functionName + "Dict")
+
 
 def getGWWikiHTML(query):
     result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
     if result == None:
         return "an error occurred getting your query, boss: " + query
     return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
+
+

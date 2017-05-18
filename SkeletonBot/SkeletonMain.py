@@ -1,4 +1,4 @@
-import discord, sys, WebUtils, inspect, random
+import discord, sys, WebUtils, inspect, random, DataBaseUtils
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -43,27 +43,35 @@ async def gw2api(ctx):
     if ctx.invoked_subcommand is None:
         await bot.send_message(ctx.message.channel, "invalid command, boss...")
 
-
-#TODO Can we possibly refactor continents() and currencies() even more?
 @gw2api.command(pass_context=True)
 async def continents(ctx):
-    me = inspect.getframeinfo(inspect.currentframe()).function
-    if len(WebUtils.getDictByName(me)) == 0:
-        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
-    WebUtils.getGW2ApiData(me)
-    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(me)))
+    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
 
 @gw2api.command(pass_context=True)
 async def currencies(ctx):
-    me = inspect.getframeinfo(inspect.currentframe()).function
-    if len(WebUtils.getDictByName(me)) == 0:
-        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
-    WebUtils.getGW2ApiData(me)
-    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(me)))    
+    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
+
+@gw2api.command(pass_context=True)
+async def register(ctx, *, message):
+    DataBaseUtils.registerAPIKey(ctx.message.author.id,ctx.message.author.display_name, message)
+    await bot.send_message(ctx.message.channel, "API Key Registered!")   
+
+@gw2api.command(pass_context=True)
+async def name(ctx):
+    await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(ctx.message.author.id)))   
+
+#print(ctx.message.author.id)
+#print(ctx.message.author.display_name) 
 
 @bot.command(pass_context=True)
 async def commands(ctx):
-    await bot.send_message(ctx.message.channel, getCommands())    
+    await bot.send_message(ctx.message.channel, getCommands())
+
+async def fetchGW2Data(ctx, functionName):
+    if len(WebUtils.getDictByName(functionName)) == 0:
+        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
+    WebUtils.getGW2ApiData(functionName)
+    await bot.send_message(ctx.message.channel, str(WebUtils.getDictByName(functionName)))  
 
 def getCommands():
     result = ""
@@ -71,8 +79,6 @@ def getCommands():
         result += command + ": " + description + "\n"
     return result
 
-    
-    
 bot.run(sys.argv[1])
 
 
