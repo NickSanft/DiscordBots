@@ -3,3 +3,4 @@ TheDukeOfAdventure/RPG.txt
 *.db
 TheDukeOfAdventure/run.bat
 TheDukeOfAdventure/start.bat
+TheDukeOfAdventure/__pycache__

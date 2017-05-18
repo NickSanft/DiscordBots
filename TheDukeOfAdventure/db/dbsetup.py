@@ -2,7 +2,7 @@ import sqlite3 as sql
 import os
 
 con = None
-databaseName = "test.db"
+databaseName = "game.db"
 
 def testDB():
     pass

@@ -1,12 +1,11 @@
 import discord, asyncio, sys
 from discord.ext import commands
-import sqlite3 as sql
+
+import gamedb
 
 #bot.get_channel('312676555514183681')
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or('!'))
-
-con = sql.connect('game.db')
 
 @bot.event
 async def on_ready():
@@ -27,27 +26,12 @@ async def join(ctx):
     player_id = ctx.message.author.id
     player_nickname = ctx.message.author.display_name
 
-    cur = con.cursor()
-
-    cur.execute("SELECT * FROM Players WHERE user_id=?", (player_id,))
-    data = cur.fetchone()
-    if data != None:
-        await bot.say("You've already joined the game, " + player_nickname + "!")
-    else:
-        cur.execute("INSERT OR REPLACE INTO Players VALUES (?, ?)", (player_id, player_nickname))
-
-        data = cur.fetchall()
-        await bot.say("You're now playing in the Great Test RPG!")
+    gamedb.add_user(player_id, player_nickname)
 
 
 @bot.command()
 async def sql_ver():
-    cur = con.cursor()
-    cur.execute('SELECT SQLITE_VERSION()')
-
-    data = cur.fetchone()
-
-    await bot.say(data)
+    pass
 
 @bot.command(pass_context=True)
 async def sql3(ctx, *message: str):
