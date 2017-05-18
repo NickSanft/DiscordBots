@@ -22,12 +22,8 @@ async def on_message(message):
 
 @bot.command(pass_context=True)
 async def join(ctx):
-
     player_id = ctx.message.author.id
-    player_nickname = ctx.message.author.display_name
-
-    gamedb.add_user(player_id, player_nickname)
-
+    gamedb.add_character(player_id)
 
 @bot.command()
 async def sql_ver():
