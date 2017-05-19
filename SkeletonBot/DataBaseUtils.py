@@ -67,7 +67,7 @@ def countQuery(tableName):
     return cur.fetchone()[0]
     
 
-#createTables()
+createTables()
 #print(countQuery("continents"))
 #initDataBase()
 #insertTest()

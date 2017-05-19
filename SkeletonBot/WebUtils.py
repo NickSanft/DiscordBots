@@ -23,12 +23,25 @@ def getGW2ApiData(functionName):
         itemSoup = json.loads(str(getSoup(url + "?id=" + key)))
         DataBaseUtils.insertQuery(functionName,item,itemSoup.get('name'))
 
-def getDisplayName(DiscordID):
+def getAccountData(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    soup = getSoup(gw2_api_url + "account?access_token=" + APIKey)
-    nameJSON = json.loads(str(soup))
-    #print(soup)
-    return nameJSON.get('name')
+    return getSoup(gw2_api_url + "account?access_token=" + APIKey)
+        
+def getWorld(DiscordID):
+    world = json.loads(str(getAccountData(DiscordID))).get('world')
+    return json.loads(str(getSoup(gw2_api_url + "worlds?id=" + str(world)))).get('name')
+
+def getDisplayName(DiscordID):
+    return json.loads(str(getAccountData(DiscordID))).get('name')
+
+def getRemainingAP(DiscordID):
+    accountJSON = json.loads(str(getAccountData(DiscordID)))
+    result = 15000 - (int(accountJSON.get('daily_ap')) + int(accountJSON.get('monthly_ap')))
+    if(result < 15000):
+        text = "You have " + str(result) + " remaining. Only " + str(result/10) + " more days before the nightmare ends!"
+    else:
+        text = "YOU ARE FREE FROM THE NIGHTMARE"
+    return text
 
 def getGWWikiHTML(query):
     result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))

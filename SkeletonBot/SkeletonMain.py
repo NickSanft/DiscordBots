@@ -62,7 +62,19 @@ async def register(ctx, *, message):
 
 @gw2api.command(pass_context=True)
 async def name(ctx):
-    await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(ctx.message.author.id)))   
+    await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(ctx.message.author.id)))
+
+@gw2api.command(pass_context=True)
+async def accountinfo(ctx):
+    await bot.send_message(ctx.message.channel, str(WebUtils.getAccountData(ctx.message.author.id)))
+
+@gw2api.command(pass_context=True)
+async def world(ctx):
+    await bot.send_message(ctx.message.channel, "You are in the world: " + WebUtils.getWorld(ctx.message.author.id))
+
+@gw2api.command(pass_context=True)
+async def dailyap(ctx):
+    await bot.send_message(ctx.message.channel, WebUtils.getRemainingAP(ctx.message.author.id))      
 
 @gw2api.command(pass_context=True)
 async def coins(ctx, *, message):
