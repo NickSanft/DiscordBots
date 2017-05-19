@@ -78,6 +78,7 @@ async def whois(name: str = None):
             user_id = result[0]
             display_name = None
 
+            # Check all members in all servers (should just be one)
             for server in bot.servers:
                 for member in server.members:
                     if member.id == user_id:
