@@ -61,8 +61,6 @@ async def summary(ctx):
         # Include a message stating that there are unspent ability points (or not).
         if result[3] > 0:
             msg += strings.all["summary"]["unspent"]
-        else:
-            msg += strings.all["summary"]["no_unspent"]
 
         await bot.say(msg.format(*result))
 
