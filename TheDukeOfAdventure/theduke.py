@@ -24,7 +24,7 @@ async def on_message(message):
 async def join(ctx, name: str = None):
 
     if name == None:
-        await bot.say(strings.all["join"]["notfound"])
+        await bot.say(strings.all["join"]["no_arg"])
     else:
         player_id = ctx.message.author.id
         wasAdded = gamedb.add_character(player_id, name)
@@ -39,7 +39,7 @@ async def join(ctx, name: str = None):
 async def name(ctx, name: str = None):
 
     if name == None:
-        await bot.say(strings.all["name"]["notfound"])
+        await bot.say(strings.all["name"]["no_arg"])
     else:
         wasUpdated = gamedb.update_name(ctx.message.author.id, name)
 
@@ -64,5 +64,38 @@ async def summary(ctx):
 
         await bot.say(msg.format(*result))
 
+@bot.command()
+async def whois(name: str = None):
+
+    if name == None:
+        await bot.say(strings.all["whois"]["no_arg"])
+    else:
+        result = gamedb.whois(name)
+
+        if result == None:
+            await bot.say(strings.all["whois"]["notfound"].format(name))
+        else:
+            user_id = result[0]
+            display_name = None
+
+            for server in bot.servers:
+                for member in server.members:
+                    if member.id == user_id:
+                        display_name = member.display_name
+
+            if display_name == None:
+                await bot.say(strings.all["whois"]["notfound"].format(name))
+            else:
+                await bot.say(strings.all["whois"]["found"].format(name, display_name))
+
+@bot.command()
+async def players():
+    all_players = gamedb.get_all_characters()
+
+    msg = strings.all["players"]["list"]
+    for player, level in all_players:
+        msg += strings.all["players"]["template"].format(player, level)
+
+    await bot.say(msg)
 
 bot.run(sys.argv[1])

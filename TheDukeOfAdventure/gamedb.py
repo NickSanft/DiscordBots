@@ -32,7 +32,7 @@ test_select()
 def player_exists(id: str):
     cur = con.cursor()
 
-    queryString = """SELECT * FROM Characters WHERE user_id=?"""
+    queryString = "SELECT * FROM Characters WHERE user_id=?"
     cur.execute(queryString, (id,))
     data = cur.fetchone()
 
@@ -81,17 +81,39 @@ def update_name(id: str, name: str):
     else:
         return False
 
-# Returns the row of a character and their inventory
+# Returns the row of a character.
+# TODO: And their inventory.
 def get_character(id: str):
 
-    if player_exists(id):
-        cur = con.cursor()
+    cur = con.cursor()
 
-        queryString = "SELECT * FROM Characters WHERE user_id=?"
+    queryString = "SELECT * FROM Characters WHERE user_id=?"
 
-        cur.execute(queryString, (id,))
-        data = cur.fetchone()
+    cur.execute(queryString, (id,))
+    data = cur.fetchone()
 
-        return data
-    else:
-        return None
+    return data
+
+# Returns the ID of the owner of a character given the name.
+def whois(name: str):
+
+    cur = con.cursor()
+
+    queryString = "SELECT user_id FROM Characters WHERE name=?"
+
+    cur.execute(queryString, (name,))
+    data = cur.fetchone()
+
+    return data
+
+# Returns the name and level of every character
+def get_all_characters():
+
+    cur = con.cursor()
+
+    queryString = "SELECT name, level FROM Characters ORDER BY name ASC"
+
+    cur.execute(queryString)
+    data = cur.fetchall()
+
+    return data
