@@ -37,3 +37,7 @@ def getGWWikiHTML(query):
     return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
 
 
+def gw2Exchange(currencyType, quantity):
+    return getSoup(gw2_api_url + 'commerce/exchange/'+ currencyType + '?quantity='+ quantity)
+
+

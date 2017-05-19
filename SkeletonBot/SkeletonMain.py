@@ -64,6 +64,16 @@ async def register(ctx, *, message):
 async def name(ctx):
     await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(ctx.message.author.id)))   
 
+@gw2api.command(pass_context=True)
+async def coins(ctx, *, message):
+    currencyType = inspect.getframeinfo(inspect.currentframe()).function
+    await bot.send_message(ctx.message.channel, WebUtils.gw2Exchange(currencyType, message))
+
+@gw2api.command(pass_context=True)
+async def gems(ctx, *, message):
+    currencyType = inspect.getframeinfo(inspect.currentframe()).function
+    await bot.send_message(ctx.message.channel, WebUtils.gw2Exchange(currencyType, message))
+
 #print(ctx.message.author.id)
 #print(ctx.message.author.display_name) 
 
