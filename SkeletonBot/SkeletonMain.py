@@ -60,21 +60,40 @@ async def register(ctx, *, message):
     DataBaseUtils.registerAPIKey(ctx.message.author.id,ctx.message.author.display_name, message)
     await bot.send_message(ctx.message.channel, "API Key Registered!")   
 
+#TODO refactor into dictionary
+
 @gw2api.command(pass_context=True)
 async def name(ctx):
-    await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(ctx.message.author.id)))
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(DiscordID)))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")    
+    
 
 @gw2api.command(pass_context=True)
 async def accountinfo(ctx):
-    await bot.send_message(ctx.message.channel, str(WebUtils.getAccountData(ctx.message.author.id)))
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, str(WebUtils.getAccountData(DiscordID)))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @gw2api.command(pass_context=True)
 async def world(ctx):
-    await bot.send_message(ctx.message.channel, "You are in the world: " + WebUtils.getWorld(ctx.message.author.id))
-
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, "You are in the world: " + WebUtils.getWorld(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        
 @gw2api.command(pass_context=True)
 async def dailyap(ctx):
-    await bot.send_message(ctx.message.channel, WebUtils.getRemainingAP(ctx.message.author.id))      
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, WebUtils.getRemainingAP(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")   
 
 @gw2api.command(pass_context=True)
 async def coins(ctx, *, message):

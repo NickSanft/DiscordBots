@@ -45,6 +45,12 @@ def insertQuery(tableName, itemID, itemDescription):
     con.cursor().execute("INSERT INTO " + tableName + " VALUES (?,?)",(itemID,itemDescription))
     con.commit()
     
+def hasAPIKey(DiscordID):
+    cur = con.cursor()
+    cur.execute("SELECT COUNT(1) FROM GW2_API_KEYS WHERE DiscordID = ?",(DiscordID,))
+    if(cur.fetchone()[0] < 1):
+        return False
+    return True
 
 def getAPIKey(DiscordID):
     cur = con.cursor()
