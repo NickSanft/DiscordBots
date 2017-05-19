@@ -15,7 +15,7 @@ all = {
         "notfound" : ("You're not even playing the game! Are you too cowardly? Too *weak*? "
                        "Summarize yourself; there is no room for weaklings here!"),
         "stats" : ("Here's a summary of your character:\n"
-                   "```Name: {1}\nLevel {2}\nHealth: {4}/{5}\nFight: {6}\nBody: {7}\nSpirit: {8}"),
+                   "```Name: {1}\nLevel {2}\nHealth: {5}/{4}\nFight: {6}\nBody: {7}\nSpirit: {8}"),
         "unspent" : ("\n\nYou still have {3} unspent ability points!```"),
         "no_unspent" : ("```")
     }
