@@ -11,10 +11,10 @@ all = {
         "updated" : ("From this point forth, you shall be known as **{0}**! Go now, on to adventure! TO GLORY!"),
         "failed" : ("Oh god something went wrong")
     },
-    "summary" : {
+    "stats" : {
         "notfound" : ("You're not even playing the game! Are you too cowardly? Too *weak*? "
                        "Summarize yourself; there is no room for weaklings here!"),
-        "stats" : ("**{1}** Level {2}\n\n:heart: Health: {5}/{4}\n:muscle: Fight: {6}"
+        "all_stats" : ("**{1}** Level {2}\n\n:heart: Health: {5}/{4}\n:muscle: Fight: {6}"
                    "\n:fist: Body: {7}\n:raised_hands: Spirit: {8}"),
         "unspent" : ("\n\n*You still have* {3} *unspent ability points!*")
     },

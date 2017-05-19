@@ -49,18 +49,18 @@ async def name(ctx, name: str = None):
             print(strings.all["name"]["failed"])
 
 @bot.command(pass_context=True)
-async def summary(ctx):
+async def stats(ctx):
     result = gamedb.get_character(ctx.message.author.id)
 
     # Did not have a character matching id.
     if result == None:
-        await bot.say(strings.all["summary"]["notfound"])
+        await bot.say(strings.all["stats"]["notfound"])
     else:
-        msg = (strings.all["summary"]["stats"])
+        msg = (strings.all["stats"]["all_stats"])
 
         # Include a message stating that there are unspent ability points (or not).
         if result[3] > 0:
-            msg += strings.all["summary"]["unspent"]
+            msg += strings.all["stats"]["unspent"]
 
         await bot.say(msg.format(*result))
 
