@@ -1,7 +1,7 @@
 import discord, asyncio, sys, time
 from discord.ext import commands
 
-import gamedb
+import gamedb, strings
 
 #bot.get_channel('312676555514183681')
 
@@ -24,55 +24,45 @@ async def on_message(message):
 async def join(ctx, name: str = None):
 
     if name == None:
-        await bot.say("What courage; what ENTHUSIASM! You wish to join " +
-                      "the game! ...And yet, you have not given me a name " +
-                      "by which to call you!\n\n" +
-                      "`Usage: $join <name>`")
+        await bot.say(strings.all["join"]["notfound"])
     else:
         player_id = ctx.message.author.id
         wasAdded = gamedb.add_character(player_id, name)
 
         if wasAdded:
             await bot.send_message(ctx.message.author, "what up")
-            await bot.say(("Welcome, {0}! I've PMed you with information "
-                          "about the game and your character!").format(name))
+            await bot.say(strings.all["join"]["added"].format(name))
         else:
-            await bot.say("You're already playing the game!")
+            await bot.say(strings.all["join"]["exists"])
 
 @bot.command(pass_context=True)
 async def name(ctx, name: str = None):
 
     if name == None:
-        await bot.say(("If you'd like to change your name, you'll need "
-                       "to fill out everything correctly! :kissing_heart:\n\n"
-                       "`Usage: $name <new_name>`"))
+        await bot.say(strings.all["name"]["notfound"])
     else:
         wasUpdated = gamedb.update_name(ctx.message.author.id, name)
 
         if wasUpdated:
-            await bot.say(("From this point forth, you shall be known "
-                           "as {0}! Go now, on to adventure! "
-                           "TO GLORY!").format(name))
+            await bot.say(strings.all["name"]["updated"].format(name))
         else:
-            print("Oh god something went wrong")
+            print(strings.all["name"]["failed"])
 
 @bot.command(pass_context=True)
 async def summary(ctx):
     result = gamedb.get_character(ctx.message.author.id)
 
+    # Did not have a character matching id.
     if result == None:
-        await bot.say(("You're not even playing the game! "
-                       "Are you too cowardly? Too *weak*? "
-                       "Summarize yourself; there is no room for weaklings here!"))
+        await bot.say(strings.all["summary"]["notfound"])
     else:
-        print(result)
-        msg = ("Here's a summary of your character:\n"
-              "```Name: {1}\nLevel {2}\nHealth: {4}/{5}\nFight: {6}\n"
-              "Body: {7}\nSpirit: {8}")
+        msg = (strings.all["summary"]["stats"])
+
+        # Include a message stating that there are unspent ability points (or not).
         if result[3] > 0:
-            msg += "\n\nYou still have {3} unassigned ability points!```"
+            msg += strings.all["summary"]["unspent"]
         else:
-            msg += "```"
+            msg += strings.all["summary"]["no_unspent"]
 
         await bot.say(msg.format(*result))
 
