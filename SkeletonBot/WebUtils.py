@@ -31,6 +31,10 @@ def getWorld(DiscordID):
     world = json.loads(str(getAccountData(DiscordID))).get('world')
     return json.loads(str(getSoup(gw2_api_url + "worlds?id=" + str(world)))).get('name')
 
+def getCharacters(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    return json.loads(str(getSoup(gw2_api_url + "characters?access_token=" + str(APIKey))))
+                          
 def getDisplayName(DiscordID):
     return json.loads(str(getAccountData(DiscordID))).get('name')
 

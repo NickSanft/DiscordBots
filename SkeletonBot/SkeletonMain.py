@@ -35,6 +35,16 @@ async def say(ctx, *, message):
     await bot.send_message(ctx.message.channel, message)
 
 @bot.command(pass_context=True)
+async def emote(ctx, *, message):
+    results = ""
+    for char in message:
+        if char.isalpha():
+            results += ":regional_indicator_" + char.lower() + ":"
+        else:
+            results += char
+    await bot.send_message(ctx.message.channel, results)    
+
+@bot.command(pass_context=True)
 async def gw2wiki(ctx, *, message):
     await bot.send_message(ctx.message.channel, WebUtils.getGWWikiHTML(message))
 
@@ -46,6 +56,14 @@ async def gw2api(ctx):
 @gw2api.command(pass_context=True)
 async def continents(ctx):
     await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
+
+@gw2api.command(pass_context=True)
+async def characters(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, "Here is a list of your characters: \n" + str(WebUtils.getCharacters(DiscordID)))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @gw2api.command(pass_context=True)
 async def currencies(ctx):
