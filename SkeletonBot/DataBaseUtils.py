@@ -83,13 +83,14 @@ def findItemByName(name):
     cur = con.cursor()
     cur.execute("SELECT * FROM items WHERE ItemDescription LIKE ?",("%" + name.replace(" ","%") + "%",))
     data = cur.fetchall()
-    return data 
+    return data
 
 createTables()
+#print(selectAllQuery("items"))
 #print(countQuery("continents"))
 #initDataBase()
 #insertTest()
 #cleanTables()
 #print(selectTest())
 #con.commit()
-#print(findItemByName("Jalis guard"))
+#print(findItemByName("Jalis"))

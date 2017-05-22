@@ -8,6 +8,7 @@ This is the main script for the Skeleton Bot for a discord server.
 bot = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
 #TODO See if the list of the commands can be extracted using discord.py...
+#TODO Move the Guild Wars 2 commands into another bot.
 BotCommands = {
     'commands': 'Displays a list of commands. You are in this one, dude.',
     'gw2api': 'the bot looks up something using the Guild Wars 2 API.',
@@ -70,8 +71,12 @@ async def currencies(ctx):
     await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
 
 @gw2api.command(pass_context=True)
-async def items(ctx):
-    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)    
+async def item(ctx, *, message):
+    await bot.send_message(ctx.message.channel, WebUtils.getItemInfoByName(message))    
+
+@gw2api.command(pass_context=True)
+async def price(ctx, *, message):
+    await bot.send_message(ctx.message.channel, WebUtils.getItemPrice(message))    
 
 @gw2api.command(pass_context=True)
 async def register(ctx, *, message):
