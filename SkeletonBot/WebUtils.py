@@ -67,4 +67,4 @@ def getGWWikiHTML(query):
 def gw2Exchange(currencyType, quantity):
     return getSoup(gw2_api_url + 'commerce/exchange/'+ currencyType + '?quantity='+ quantity)
 
-loadItems()
+#loadItems()
