@@ -2,6 +2,16 @@ import requests, bs4, json, DataBaseUtils
 
 gw2_api_url = "https://api.guildwars2.com/v2/"
 
+def loadItems():
+    itemJSON = json.loads(str(getSoup(gw2_api_url + "items")))
+    for item in itemJSON:
+        key = str(item)
+        if DataBaseUtils.hasItem(key):
+           print(key + " already exists!")
+        else:
+            itemSoup = json.loads(str(getSoup(gw2_api_url + "items?id=" + key)))
+            DataBaseUtils.insertQuery("items",item,itemSoup.get('name'))
+
 def getSoup(url):
     try:
         print('Downloading page %s...' % url)
@@ -57,4 +67,4 @@ def getGWWikiHTML(query):
 def gw2Exchange(currencyType, quantity):
     return getSoup(gw2_api_url + 'commerce/exchange/'+ currencyType + '?quantity='+ quantity)
 
-
+loadItems()

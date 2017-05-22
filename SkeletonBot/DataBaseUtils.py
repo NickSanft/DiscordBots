@@ -52,6 +52,13 @@ def hasAPIKey(DiscordID):
         return False
     return True
 
+def hasItem(itemID):
+    cur = con.cursor()
+    cur.execute("SELECT COUNT(1) FROM items WHERE ItemID = ?",(itemID,))
+    if(cur.fetchone()[0] < 1):
+        return False
+    return True   
+
 def getAPIKey(DiscordID):
     cur = con.cursor()
     cur.execute("SELECT GWAPIKey FROM GW2_API_KEYS WHERE DiscordID = ?",(DiscordID,))
@@ -71,7 +78,12 @@ def selectAllQuery(tableName):
 def countQuery(tableName):
     cur = con.cursor().execute("SELECT COUNT(1) FROM " + tableName)
     return cur.fetchone()[0]
-    
+
+def findItemByName(name):
+    cur = con.cursor()
+    cur.execute("SELECT * FROM items WHERE ItemDescription LIKE ?",("%" + name.replace(" ","%") + "%",))
+    data = cur.fetchall()
+    return data 
 
 createTables()
 #print(countQuery("continents"))
@@ -80,3 +92,4 @@ createTables()
 #cleanTables()
 #print(selectTest())
 #con.commit()
+#print(findItemByName("Jalis guard"))
