@@ -38,9 +38,9 @@ def getGW2ApiData(functionName):
 def getItemPrice(name):
     data = DataBaseUtils.findItemByName(name)
     if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ")! Please refine your search."
+        return "```Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search.```"
     elif(len(data) < 1):
-         return "No results! Please refine your search."
+         return "```No results! Please refine your search.```"
     results = "```"
     for item in data:
         key = str(item[0])
@@ -60,15 +60,16 @@ def getItemPrice(name):
 def getItemInfoByName(name):
     data = DataBaseUtils.findItemByName(name)
     if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ")! Please refine your search."
+        return "```Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search.```"
     elif(len(data) < 1):
-         return "No results! Please refine your search."         
-    results = ""
+         return "```No results! Please refine your search.```"         
+    results = "```"
     for item in data:
         key = str(item[0])
-        url = gw2_api_url + "items?id=" + key
-        itemPicture = json.loads(getSoup(url).text).get('icon')
-        results += key + ": " + item[1] + " " + itemPicture + "\n" 
+        #url = gw2_api_url + "items?id=" + key
+        #itemPicture = json.loads(getSoup(url).text).get('icon')
+        results += key + ": " + item[1] + "\n"
+    results += "```"
     return results
 
 def getAccountData(DiscordID):
@@ -80,26 +81,32 @@ def getWorld(DiscordID):
     return json.loads(getSoup(gw2_api_url + "worlds?id=" + str(world)).text).get('name')
 
 def getCharacters(DiscordID):
+    results = "```"
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    return json.loads(getSoup(gw2_api_url + "characters?access_token=" + str(APIKey)).text)
+    characterJSON = json.loads(getSoup(gw2_api_url + "characters?access_token=" + str(APIKey)).text)
+    for character in characterJSON:
+        results += character + "\n"
+    results += "```"
+    return results
+     
                           
 def getDisplayName(DiscordID):
-    return json.loads(str(getAccountData(DiscordID))).get('name')
+    return "``` Your account name is: " + json.loads(str(getAccountData(DiscordID))).get('name') + "```"
 
 def getRemainingAP(DiscordID):
     accountJSON = json.loads(getAccountData(DiscordID).text)
     result = 15000 - (int(accountJSON.get('daily_ap')) + int(accountJSON.get('monthly_ap')))
     if(result < 15000):
-        text = "You have " + str(result) + " remaining. Only " + str(result/10) + " more days before the nightmare ends!"
+        text = "```You have " + str(result) + " remaining. Only " + str(result/10) + " more days before the nightmare ends!```"
     else:
-        text = "YOU ARE FREE FROM THE NIGHTMARE"
+        text = "```YOU ARE FREE FROM THE NIGHTMARE```"
     return text
 
 def getGWWikiHTML(query):
     result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
     if result == None:
-        return "an error occurred getting your query, boss: " + query
-    return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
+        return "```an error occurred getting your query, boss: " + query + "```"
+    return "```" + result.select("p")[0].getText() + "\n" + result.select("p")[1].getText() + "```"
 
 
 def gw2Exchange(currencyType, quantity):

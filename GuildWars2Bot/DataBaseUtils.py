@@ -1,6 +1,6 @@
 import sqlite3 as sql
 
-databaseName = "skeleton.db"
+databaseName = "guildwars.db"
 con = sql.connect(databaseName)
 
 #run this for initial db setup or if a schema change has been made and you want to wipe everything.
@@ -8,7 +8,7 @@ def initDataBase():
     dropTables()
     createTables()
 
-
+#USE AT YOUR OWN RISK, DROPS EVERYTHING
 def dropTables():
     cur = con.cursor()
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -26,20 +26,13 @@ def createTables():
     con.cursor().execute('''CREATE TABLE IF NOT EXISTS items (ItemID INTEGER PRIMARY KEY, ItemDescription varchar(200))''')
     con.commit()
 
+#USE AT YOUR OWN RISK, DELETES ALL ROWS FROM ALL TABLES
 def cleanTables():
     cur = con.cursor()
     cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
     for row in cur:
         con.cursor().execute("DELETE FROM " + row[0])
         con.commit() 
-           
-
-"""
-def insertTest():
-    cur = con.cursor()
-    cur.execute("INSERT INTO GW2_API_KEYS VALUES ('123567777','1234',date('now'))")
-    con.commit()
-"""
 
 def insertQuery(tableName, itemID, itemDescription):
     con.cursor().execute("INSERT INTO " + tableName + " VALUES (?,?)",(itemID,itemDescription))

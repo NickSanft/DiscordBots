@@ -1,6 +1,8 @@
 SkeletonBot/go.bat
+SkeletonBot/__pycache__
 TheDukeOfAdventure/RPG.txt
 *.db
 TheDukeOfAdventure/run.bat
 TheDukeOfAdventure/start.bat
 TheDukeOfAdventure/__pycache__
+GuildWars2Bot/__pycache__
