@@ -10,7 +10,7 @@ with the first argument being your Bot Token from the Discord API.
 """
 bot = Bot(command_prefix=commands.when_mentioned_or('!gw2 '))
 
-emotes = ["(／≧ω＼)","(´～｀ヾ)","(๑ÒωÓ๑)"]
+emotes = ["(／≧ω＼)","(´～｀ヾ)","(๑ÒωÓ๑)","ﾍ(=^･ω･^= )ﾉ","(^･ω･^=)~"]
 
 @bot.event
 async def on_ready():
@@ -108,6 +108,8 @@ async def fetchGW2Data(ctx, functionName):
         WebUtils.getGW2ApiData(functionName)
     await bot.send_message(ctx.message.channel, DataBaseUtils.selectAllQuery(functionName))  
 
-bot.run(sys.argv[1])
-
-
+if len(sys.argv) >= 2:
+    bot_token = sys.argv[1]
+    bot.run(sys.argv[1])
+else:
+    print("A bot token was not provided, the script will now end!!!")
