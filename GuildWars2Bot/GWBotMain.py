@@ -64,6 +64,15 @@ async def name(ctx):
         await bot.send_message(ctx.message.channel, str(WebUtils.getDisplayName(DiscordID)))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def bank(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, WebUtils.getBankCount(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+  
         
 @bot.group(pass_context=True)
 async def accountinfo(ctx):

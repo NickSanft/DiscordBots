@@ -1,4 +1,5 @@
 import requests, bs4, json, DataBaseUtils
+from collections import defaultdict
 
 gw2_api_url = "https://api.guildwars2.com/v2/"
 
@@ -7,8 +8,8 @@ This is a simple decorator to wrap a result in "```" characters to nicely
 format text when sending back a message from the bot.
 """
 def make_pretty(func):
-   def func_wrapper(name):
-       return "```{0}```".format(func(name))
+   def func_wrapper(*args, **kwargs):
+       return "```{0}```".format(func(*args, **kwargs))
    return func_wrapper
 
 def loadItems():
@@ -84,6 +85,36 @@ def getItemInfoByName(name):
         #itemPicture = json.loads(getSoup(url).text).get('icon')
         results += key + ": " + item[1] + "\n"
     return results
+
+#TODO figure out how to better refactor this...
+@make_pretty
+def getBankCount(DiscordID, name):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    data = DataBaseUtils.findItemByName(name)
+    if(len(data) > 10):
+        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."         
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)
+    url = gw2_api_url + "account/bank?access_token=" + APIKey
+    bankItems = json.loads(getSoup(url).text)
+    for item in bankItems:
+       if item is None:
+          continue
+       itemID = item.get('id')
+       if itemID in itemDict:
+          old_value = itemDict[itemID]
+          new_value = old_value[0],old_value[1] + item.get('count')
+          itemDict[itemID] = new_value
+    results = ""          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results   
 
 def getAccountData(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
