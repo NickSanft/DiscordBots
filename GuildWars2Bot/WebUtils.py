@@ -108,13 +108,51 @@ def getBankCount(DiscordID, name):
           old_value = itemDict[itemID]
           new_value = old_value[0],old_value[1] + item.get('count')
           itemDict[itemID] = new_value
-    results = ""          
+    results = "Here is a list of how many of each item you have in your bank... \n"          
     for item in itemDict:
        value = itemDict[item]
        results += "ItemID: " + str(item) + "\n"
        results += "ItemDescription: " + value[0] + "\n"
        results += "ItemCount: " + str(value[1]) + "\n\n"
-    return results   
+    return results
+
+#TODO Refactor this with getCharacters
+@make_pretty
+def getCharacterInventory(DiscordID, ItemName):
+    data = DataBaseUtils.findItemByName(ItemName)
+    print(data)
+    if(len(data) > 10):
+        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)    
+    characterJSON = json.loads(getSoup(gw2_api_url + "characters" + AccessToken).text)      
+    for character in characterJSON:
+        characterInv = json.loads(getSoup(gw2_api_url + "characters/" + character + "/inventory" + AccessToken).text)
+        for bag in characterInv.get('bags'):
+           if bag is None:
+              continue
+           for item in bag.get('inventory'):
+               if item is None:
+                  continue
+               itemID = item.get('id')
+               if itemID in itemDict:
+                  old_value = itemDict[itemID]
+                  new_value = old_value[0],old_value[1] + item.get('count')
+                  itemDict[itemID] = new_value
+    results = "Here is a list of how many of each item you have in your character inventories... \n"          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results
+    
+        
 
 def getAccountData(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)

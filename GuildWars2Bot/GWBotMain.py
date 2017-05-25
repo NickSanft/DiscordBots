@@ -72,7 +72,16 @@ async def bank(ctx, *, message):
         await bot.send_message(ctx.message.channel, WebUtils.getBankCount(DiscordID, message))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-  
+
+@bot.group(pass_context=True)
+async def inventory(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    await bot.send_message(ctx.message.channel, "Please hold on, I need to go through a lot of characters... " + random.choice(emotes))
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, WebUtils.getCharacterInventory(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+    
         
 @bot.group(pass_context=True)
 async def accountinfo(ctx):
