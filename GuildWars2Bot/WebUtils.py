@@ -118,6 +118,38 @@ def getBankCount(DiscordID, name):
 
 #TODO Refactor this with getCharacters
 @make_pretty
+def getMaterials(DiscordID, ItemName):
+    data = DataBaseUtils.findItemByName(ItemName)
+    print(data)
+    if(len(data) > 10):
+        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)    
+    itemJSON = json.loads(getSoup(gw2_api_url + "account/materials" + AccessToken).text)      
+    for item in itemJSON:
+       if item is None:
+         continue
+       itemID = item.get('id')
+       if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0],old_value[1] + item.get('count')
+            itemDict[itemID] = new_value
+
+    results = "Here is a list of how many of each item you have in your material storage... \n"          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results  
+
+#TODO Refactor this with getCharacters
+@make_pretty
 def getCharacterInventory(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     print(data)
