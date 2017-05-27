@@ -183,6 +183,34 @@ def getCharacterInventory(DiscordID, ItemName):
        results += "ItemDescription: " + value[0] + "\n"
        results += "ItemCount: " + str(value[1]) + "\n\n"
     return results
+
+@make_pretty
+def getHeroPoints(DiscordID, charname):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    HeroPointDict = {}
+    print(charname)
+    if charname is None:
+       characterJSON = json.loads(getSoup(gw2_api_url + "characters" + AccessToken).text)      
+       for character in characterJSON:
+          characterHP = json.loads(getSoup(gw2_api_url + "characters/" + character + "/heropoints" + AccessToken).text)
+          HeroPointDict[character] = len(characterHP)
+          results = "Here is a list of how many of Hero Points you have on each character... \n"
+    else:
+       characterSoup = getSoup(gw2_api_url + "characters/" + charname + "/heropoints" + AccessToken)
+       if characterSoup is not None:
+          characterHP = json.loads(characterSoup.text)
+          HeroPointDict[charname] = len(characterHP)
+          results = "Here are how many Hero Points you have on " + charname + "... \n"
+       else:
+          return "Could not find the character: " + charname + "... Did you get the name wrong?"
+    
+    #print(HeroPointDict)
+    for character in HeroPointDict:
+       value = HeroPointDict[character]
+       results += "Character: " + str(character) + "\n"
+       results += "Hero Points: " + str(value) + "\n\n"
+    return results   
     
         
 

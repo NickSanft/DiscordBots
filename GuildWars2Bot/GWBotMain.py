@@ -83,6 +83,16 @@ async def inventory(ctx, *, message):
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @bot.group(pass_context=True)
+async def hp(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if message == "all":
+        message = None
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, WebUtils.getHeroPoints(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")        
+
+@bot.group(pass_context=True)
 async def materials(ctx, *, message):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
