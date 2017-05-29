@@ -116,7 +116,6 @@ def getBankCount(DiscordID, name):
        results += "ItemCount: " + str(value[1]) + "\n\n"
     return results
 
-#TODO Refactor this with getCharacters
 @make_pretty
 def getMaterials(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
@@ -141,6 +140,37 @@ def getMaterials(DiscordID, ItemName):
             itemDict[itemID] = new_value
 
     results = "Here is a list of how many of each item you have in your material storage... \n"          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results     
+
+#TODO Refactor this with getCharacters
+@make_pretty
+def getWallet(DiscordID, currencyName):
+    if currencyName is not None:
+       data = DataBaseUtils.findCurrencyByName(currencyName)
+       if(len(data) < 1):
+          return "No results! Please refine your search."
+    else:
+       data = DataBaseUtils.selectAllQuery("currencies")
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)    
+    itemJSON = json.loads(getSoup(gw2_api_url + "account/wallet" + AccessToken).text)      
+    for item in itemJSON:
+       if item is None:
+         continue
+       itemID = item.get('id')
+       if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0],old_value[1] + item.get('value')
+            itemDict[itemID] = new_value
+    results = "Here are the amounts of your requested currencies... \n"          
     for item in itemDict:
        value = itemDict[item]
        results += "ItemID: " + str(item) + "\n"

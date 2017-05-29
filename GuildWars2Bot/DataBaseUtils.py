@@ -78,6 +78,12 @@ def findItemByName(name):
     data = cur.fetchall()
     return data
 
+def findCurrencyByName(name):
+    cur = con.cursor()
+    cur.execute("SELECT * FROM currencies WHERE ItemDescription LIKE ?",("%" + name.replace(" ","%") + "%",))
+    data = cur.fetchall()
+    return data
+
 createTables()
 #print(selectAllQuery("items"))
 #print(countQuery("continents"))

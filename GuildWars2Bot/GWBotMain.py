@@ -136,6 +136,16 @@ async def gems(ctx, *, message):
     currencyType = inspect.getframeinfo(inspect.currentframe()).function
     await bot.send_message(ctx.message.channel, WebUtils.gw2Exchange(currencyType, message))
 
+@bot.group(pass_context=True)
+async def wallet(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if message == "all":
+        message = None
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, str(WebUtils.getWallet(DiscordID,message)))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!") 
+
 #print(ctx.message.author.id)
 #print(ctx.message.author.display_name) 
 
