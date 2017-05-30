@@ -8,7 +8,9 @@ This is the main script for the Guild Wars 2 Bot for a discord server.
 In order to run this script, simply call this from the command line
 with the first argument being your Bot Token from the Discord API.
 """
-bot = Bot(command_prefix=commands.when_mentioned_or('!gw2 '))
+
+help_attrs = dict(hidden=True)
+bot = Bot(command_prefix=commands.when_mentioned_or('!gw2 '),help_attrs=help_attrs)
 
 emotes = ["(／≧ω＼)","(´～｀ヾ)","(๑ÒωÓ๑)","ﾍ(=^･ω･^= )ﾉ","(^･ω･^=)~"]
 
@@ -37,6 +39,14 @@ async def characters(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, "Here is a list of your characters: \n" + str(WebUtils.getCharacters(DiscordID)))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def skins(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, WebUtils.getSkins(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 

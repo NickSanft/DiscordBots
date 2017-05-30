@@ -242,7 +242,13 @@ def getHeroPoints(DiscordID, charname):
        results += "Hero Points: " + str(value) + "\n\n"
     return results   
     
-        
+@make_pretty
+def getSkins(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    skinJSON = json.loads(getSoup(gw2_api_url + "skins/" + AccessToken).text)
+    results = "You have: " + str(len(skinJSON)) + " skins unlocked on your account."
+    return results           
 
 def getAccountData(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
