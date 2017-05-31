@@ -1,4 +1,4 @@
-import discord, sys, random
+import discord, sys, random, aiohttp
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -48,6 +48,13 @@ async def emote(ctx, *, message):
 @bot.command(pass_context=True)
 async def commands(ctx):
     await bot.send_message(ctx.message.channel, getCommands())
+
+@bot.group(pass_context=True)
+async def cat(ctx):
+    async with aiohttp.get('http://random.cat/meow') as r:
+        if r.status == 200:
+            js = await r.json()
+            await bot.send_message(ctx.message.channel, js['file'])
 
 def getCommands():
     result = ""
