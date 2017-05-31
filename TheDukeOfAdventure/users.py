@@ -36,7 +36,7 @@ characters = {}
 
 # Loads all characters from database in gamedb to characters.
 def loadAllCharacters():
-    res = gamedb.get_all_characters()
+    res = gamedb.getAllCharacters()
 
     for c in res:
         characters[c[0]] = Character(*c)
@@ -45,7 +45,12 @@ def loadAllCharacters():
 
 # Saves all character information to the database in gamedb.
 def saveAllCharacters():
-    pass
+    vals = []
+    for uid, c in characters.items():
+        vals.append(c.getValues())
+
+    gamedb.saveAll(vals)
+    print("Saved {0} Characters".format(len(characters)))
 
 # Returns a Character using the user ID.
 def getCharacterById(user_id: str):

@@ -10,12 +10,11 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'))
 @bot.event
 async def on_ready():
     users.loadAllCharacters()
-    
+
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
-
 
 @bot.event
 async def on_message(message):
@@ -106,5 +105,10 @@ async def players():
     #    msg += strings.all["players"]["template"].format(player, level)
 
     #await bot.say(msg)
+
+@bot.command()
+async def save():
+    users.saveAllCharacters()
+
 
 bot.run(sys.argv[1])

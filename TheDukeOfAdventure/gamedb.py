@@ -28,7 +28,7 @@ test_select()
 ###############################################################
 
 # Returns the name and level of every character
-def get_all_characters():
+def getAllCharacters():
 
     cur = con.cursor()
 
@@ -38,6 +38,16 @@ def get_all_characters():
     data = cur.fetchall()
 
     return data
+
+# Writes the list to the database of characters.
+def saveAll(listOfCharacters):
+
+    cur = con.cursor()
+
+    queryString = "INSERT OR REPLACE INTO Characters VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
+
+    cur.executemany(queryString, listOfCharacters)
+    con.commit()
 
 # Check if a character already exists belonging to the player
 # specified by id.
