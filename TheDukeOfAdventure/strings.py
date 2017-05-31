@@ -3,7 +3,8 @@ all = {
         "added" : ("Welcome, {0}! I've PMed you with information about the game and your character!"),
         "no_arg" : ("What courage; what ENTHUSIASM! You wish to join the game! ...And yet, you have not given me a name "
                     "by which to call you!\n\n`Usage: $join <name>`"),
-        "exists" : ("You're already playing the game!")
+        "exists" : ("You're already playing the game!"),
+        "taken" : ("Your willingness to join the game is commendable, but someone is already using that name!")
     },
     "name" : {
         "no_arg" : ("If you'd like to change your name, you'll need to fill out everything correctly! :kissing_heart:\n\n"

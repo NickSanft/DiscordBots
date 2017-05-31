@@ -2,8 +2,8 @@ import gamedb
 
 class Character():
 
-    def __init__(self, user_id, name, level, stat_points,
-                 max_hp, current_hp, fight, body, spirit):
+    def __init__(self, user_id, name, level=1, stat_points=3,
+                 max_hp=10, current_hp=10, fight=1, body=1, spirit=1):
         self.user_id = user_id
         self.name = name
         self.level = level
@@ -41,7 +41,7 @@ def loadAllCharacters():
     for c in res:
         characters[c[0]] = Character(*c)
 
-    print("Loaded {0} Characters".format(len(characters)))
+    print("Loaded {0} Character(s)".format(len(characters)))
 
 # Saves all character information to the database in gamedb.
 def saveAllCharacters():
@@ -63,6 +63,16 @@ def nameExists(name: str):
             return True
 
     return False
+
+def addNewCharacter(user_id: str, name: str):
+    if nameExists(name):
+        if getCharacterById(user_id) == None:
+            return None
+        else:
+            return False
+    else:
+        characters[user_id] = Character(user_id, name)
+        return True
 
 # Attempts to replace a character's name with a new one.
 def setCharacterName(user_id: str, newName: str):

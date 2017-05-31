@@ -33,7 +33,6 @@ def getAllCharacters():
     cur = con.cursor()
 
     queryString = "SELECT * FROM Characters ORDER BY name ASC"
-
     cur.execute(queryString)
     data = cur.fetchall()
 
@@ -45,7 +44,6 @@ def saveAll(listOfCharacters):
     cur = con.cursor()
 
     queryString = "INSERT OR REPLACE INTO Characters VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)"
-
     cur.executemany(queryString, listOfCharacters)
     con.commit()
 
@@ -62,27 +60,6 @@ def player_exists(id: str):
         return False
 
     return True
-
-# Adds a new character to the game using a discord id.
-def add_character(id: str, name: str):
-
-    if player_exists(id):
-        print("Character already exists belonging to user id {0}".format(id))
-        return False
-    else:
-        cur = con.cursor()
-
-        queryString = """INSERT OR REPLACE INTO Characters (user_id, name)
-                         VALUES (?, ?)"""
-
-        cur.execute(queryString, (id, name))
-        data = cur.fetchone()
-
-        print("Inserted data: {0}".format(data))
-
-        con.commit()
-
-        return True
 
 # Returns the ID of the owner of a character given the name.
 def whois(name: str):

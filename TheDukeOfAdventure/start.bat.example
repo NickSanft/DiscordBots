@@ -1,1 +1,1 @@
-python theduke.py <PUT_BOT_TOKEN_HERE>
+python theduke.py <PUT_BOT_TOKEN_HERE> <PUT_OWNER_USER_ID_HERE_FOR_STOP_COMMAND>

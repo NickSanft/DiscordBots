@@ -1,4 +1,4 @@
-import discord, asyncio, sys, time
+import discord, asyncio, sys, time, os
 from discord.ext import commands
 
 import gamedb, strings, users
@@ -29,13 +29,15 @@ async def join(ctx, name: str = None):
         await bot.say(strings.all["join"]["no_arg"])
     else:
         player_id = ctx.message.author.id
-        wasAdded = gamedb.add_character(player_id, name)
+        result = users.addNewCharacter(player_id, name)
 
-        if wasAdded:
-            await bot.send_message(ctx.message.author, "what up")
-            await bot.say(strings.all["join"]["added"].format(name))
-        else:
+        if result is None:
+            await bot.say(strings.all["join"]["taken"])
+        elif result is False:
             await bot.say(strings.all["join"]["exists"])
+        else:
+            await bot.say(strings.all["join"]["added"].format(name))
+            await bot.send_message(ctx.message.author, "what up")
 
 @bot.command(pass_context=True)
 async def name(ctx, name: str = None):
@@ -43,11 +45,11 @@ async def name(ctx, name: str = None):
     if name == None:
         await bot.say(strings.all["name"]["no_arg"])
     else:
-        wasUpdated = users.setCharacterName(ctx.message.author.id, name)
+        result = users.setCharacterName(ctx.message.author.id, name)
 
-        if wasUpdated is None:
+        if result is None:
             await bot.say(strings.all["name"]["notfound"])
-        elif wasUpdated is False:
+        elif result is False:
             await bot.say(strings.all["name"]["taken"])
         else:
             await bot.say((strings.all["name"]["updated"]).format(name))
@@ -110,5 +112,10 @@ async def players():
 async def save():
     users.saveAllCharacters()
 
+@bot.command(pass_context=True)
+async def stop(ctx):
+    if ctx.message.author.id == sys.argv[2]:
+        users.saveAllCharacters()
+        os._exit(0)
 
 bot.run(sys.argv[1])
