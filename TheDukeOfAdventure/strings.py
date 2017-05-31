@@ -9,7 +9,8 @@ all = {
         "no_arg" : ("If you'd like to change your name, you'll need to fill out everything correctly! :kissing_heart:\n\n"
                     "`Usage: $name <new_name>`"),
         "updated" : ("From this point forth, you shall be known as **{0}**! Go now, on to adventure! TO GLORY!"),
-        "failed" : ("Oh god something went wrong")
+        "taken" : ("Looks like that name is already taken! Choose another!"),
+        "notfound" : ("You're not currently playing the game - you're *nobody*. Until you join, that is!")
     },
     "stats" : {
         "notfound" : ("You're not even playing the game! Are you too cowardly? Too *weak*? "

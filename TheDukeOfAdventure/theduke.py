@@ -1,7 +1,7 @@
 import discord, asyncio, sys, time
 from discord.ext import commands
 
-import gamedb, strings
+import gamedb, strings, users
 
 #bot.get_channel('312676555514183681')
 
@@ -9,10 +9,13 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or('$'))
 
 @bot.event
 async def on_ready():
+    users.loadAllCharacters()
+    
     print('Logged in as')
     print(bot.user.name)
     print(bot.user.id)
     print('------')
+
 
 @bot.event
 async def on_message(message):
@@ -41,28 +44,32 @@ async def name(ctx, name: str = None):
     if name == None:
         await bot.say(strings.all["name"]["no_arg"])
     else:
-        wasUpdated = gamedb.update_name(ctx.message.author.id, name)
+        wasUpdated = users.setCharacterName(ctx.message.author.id, name)
 
-        if wasUpdated:
-            await bot.say(strings.all["name"]["updated"].format(name))
+        if wasUpdated is None:
+            await bot.say(strings.all["name"]["notfound"])
+        elif wasUpdated is False:
+            await bot.say(strings.all["name"]["taken"])
         else:
-            print(strings.all["name"]["failed"])
+            await bot.say((strings.all["name"]["updated"]).format(name))
 
 @bot.command(pass_context=True)
 async def stats(ctx):
-    result = gamedb.get_character(ctx.message.author.id)
+    result = users.getCharacterById(ctx.message.author.id)
 
     # Did not have a character matching id.
     if result == None:
         await bot.say(strings.all["stats"]["notfound"])
     else:
-        msg = (strings.all["stats"]["all_stats"])
+        vals = result.getValues()
+
+        msg = strings.all["stats"]["all_stats"]
 
         # Include a message stating that there are unspent ability points (or not).
-        if result[3] > 0:
+        if vals[3] > 0:
             msg += strings.all["stats"]["unspent"]
 
-        await bot.say(msg.format(*result))
+        await bot.say(msg.format(*vals))
 
 @bot.command()
 async def whois(name: str = None):
@@ -91,12 +98,13 @@ async def whois(name: str = None):
 
 @bot.command()
 async def players():
-    all_players = gamedb.get_all_characters()
+    pass
+    #all_players = gamedb.get_all_characters()
 
-    msg = strings.all["players"]["list"]
-    for player, level in all_players:
-        msg += strings.all["players"]["template"].format(player, level)
+    #msg = strings.all["players"]["list"]
+    #for player, level in all_players:
+    #    msg += strings.all["players"]["template"].format(player, level)
 
-    await bot.say(msg)
+    #await bot.say(msg)
 
 bot.run(sys.argv[1])

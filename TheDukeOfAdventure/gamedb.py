@@ -27,6 +27,18 @@ init()
 test_select()
 ###############################################################
 
+# Returns the name and level of every character
+def get_all_characters():
+
+    cur = con.cursor()
+
+    queryString = "SELECT * FROM Characters ORDER BY name ASC"
+
+    cur.execute(queryString)
+    data = cur.fetchall()
+
+    return data
+
 # Check if a character already exists belonging to the player
 # specified by id.
 def player_exists(id: str):
@@ -62,38 +74,6 @@ def add_character(id: str, name: str):
 
         return True
 
-# Updates a character's name.
-def update_name(id: str, name: str):
-
-    if player_exists(id):
-        cur = con.cursor()
-
-        queryString = "UPDATE Characters SET name=? WHERE user_id=?"
-
-        cur.execute(queryString, (name, id))
-        data = cur.fetchone()
-
-        print("Inserted data: {0}".format(data))
-
-        con.commit()
-
-        return True
-    else:
-        return False
-
-# Returns the row of a character.
-# TODO: And their inventory.
-def get_character(id: str):
-
-    cur = con.cursor()
-
-    queryString = "SELECT * FROM Characters WHERE user_id=?"
-
-    cur.execute(queryString, (id,))
-    data = cur.fetchone()
-
-    return data
-
 # Returns the ID of the owner of a character given the name.
 def whois(name: str):
 
@@ -103,17 +83,5 @@ def whois(name: str):
 
     cur.execute(queryString, (name,))
     data = cur.fetchone()
-
-    return data
-
-# Returns the name and level of every character
-def get_all_characters():
-
-    cur = con.cursor()
-
-    queryString = "SELECT name, level FROM Characters ORDER BY name ASC"
-
-    cur.execute(queryString)
-    data = cur.fetchall()
 
     return data
