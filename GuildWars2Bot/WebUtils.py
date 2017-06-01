@@ -2,6 +2,7 @@ import requests, bs4, json, DataBaseUtils, aiohttp
 from collections import defaultdict
 
 gw2_api_url = "https://api.guildwars2.com/v2/"
+maxItems = 30
 
 """
 This is a simple decorator to wrap a result in "```" characters to nicely
@@ -60,8 +61,9 @@ async def getGW2ApiData(functionName):
 @make_pretty
 async def getItemPrice(name):
     data = DataBaseUtils.findItemByName(name)
-    if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
     elif(len(data) < 1):
          return "No results! Please refine your search."
     results = ""
@@ -81,10 +83,10 @@ async def getItemPrice(name):
 @make_pretty
 async def getItemInfoByName(name):
     data = DataBaseUtils.findItemByName(name)
-    if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
     elif(len(data) < 1):
-         return "No results! Please refine your search."         
+         return "No results! Please refine your search."      
     results = ""
     for item in data:
         key = str(item[0])
@@ -98,10 +100,10 @@ async def getItemInfoByName(name):
 async def getBankCount(DiscordID, name):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     data = DataBaseUtils.findItemByName(name)
-    if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
     elif(len(data) < 1):
-         return "No results! Please refine your search."         
+         return "No results! Please refine your search."     
     itemDict = {}
     for item in data:
        itemDict[item[0]] = (item[1],0)
@@ -127,8 +129,8 @@ async def getBankCount(DiscordID, name):
 async def getMaterials(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     print(data)
-    if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
     elif(len(data) < 1):
          return "No results! Please refine your search."
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
@@ -189,8 +191,8 @@ async def getWallet(DiscordID, currencyName):
 @make_pretty
 async def getCharacterInventory(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
-    if(len(data) > 10):
-        return "Too many results (got " + str(len(data)) +  ", max is 10)! Please refine your search."
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
     elif(len(data) < 1):
          return "No results! Please refine your search."
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
