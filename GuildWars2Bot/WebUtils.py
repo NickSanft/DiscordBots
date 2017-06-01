@@ -277,6 +277,15 @@ async def getCharacters(DiscordID):
     for character in characterJSON:
         results += character + "\n"
     return results
+
+@make_pretty
+async def getCats(DiscordID):
+    results = "Here is a list of your cats: \n"
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    catJSON = await getJSON(gw2_api_url + "account/home/cats?access_token=" + APIKey)
+    for cat in catJSON:
+        results += "catID: " + str(cat.get('id')) + ": catName: " + cat.get('hint')+ "\n"
+    return results   
      
 @make_pretty                          
 async def getDisplayName(DiscordID):
