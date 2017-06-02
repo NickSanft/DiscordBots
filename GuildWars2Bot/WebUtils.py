@@ -80,6 +80,20 @@ async def getItemPrice(name):
             results += "Sell price: " + str(itemJSON.get('sells').get('unit_price') / 10000) + " gold \n\n"
     return results
 
+async def getTitles(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    titles = await getJSON(gw2_api_url + "account/titles" + AccessToken)
+    titleDescriptions = await getJSON(gw2_api_url + "titles?ids=all")
+    titleDict = {}
+    for description in titleDescriptions:
+       if description.get('id') in titles:
+          titleDict[description.get('id')] = description.get('name')
+    results = "Here are a list of your titles: \n"
+    for title,description in titleDict.items():
+       results += "TitleID: " + str(title) + " Title Desc: " + description + "\n"
+    return results   
+
 @make_pretty
 async def getItemInfoByName(name):
     data = DataBaseUtils.findItemByName(name)

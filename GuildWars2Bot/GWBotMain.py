@@ -50,6 +50,28 @@ async def skins(ctx):
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
+"""
+Gets a list of titles. This needs to be chunked, as the results are too large
+to send at once and causes a generic HTTP Exception from the Discord Library.
+"""
+@bot.group(pass_context=True)
+async def titles(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        titles = await WebUtils.getTitles(DiscordID)
+        counter = 0
+        results = "```"
+        for title in titles.split("\n"):
+            counter += 1
+            results += title + "\n"
+            if counter >= 30:
+                results += "```"
+                await bot.send_message(ctx.message.channel, results)
+                results = "```"
+                counter = 0
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
 @bot.group(pass_context=True)
 async def currencies(ctx):
     await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
