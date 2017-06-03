@@ -49,17 +49,6 @@ def getSoup(url):
     return soup
 
 
-def loadItems():
-    itemJSON = getJSON(gw2_api_url + "items")
-    for item in itemJSON:
-        key = str(item)
-        if DataBaseUtils.hasItem(key):
-            print(key + " already exists!")
-        else:
-            itemSoup = getJSON(gw2_api_url + "items?id=" + key)
-            DataBaseUtils.insertQuery("items", item, itemSoup.get('name'))
-
-
 """
 Guild Wars 2 Wiki-specific functions
 """
@@ -192,17 +181,6 @@ async def getCharacterInventory(DiscordID, ItemName):
         results += "ItemDescription: " + value[0] + "\n"
         results += "ItemCount: " + str(value[1]) + "\n\n"
     return results
-
-
-async def getGW2ApiData(functionName):
-    url = gw2_api_url + functionName
-    soup = await getJSON(url)
-    itemJSON = json.loads(str(soup))
-    results = {}
-    for item in itemJSON:
-        key = str(item)
-        itemSoup = json.loads(getJSON(url + "?id=" + key).text)
-        DataBaseUtils.insertQuery(functionName, item, itemSoup.get('name'))
 
 
 @make_pretty

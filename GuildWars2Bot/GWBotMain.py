@@ -26,10 +26,12 @@ Utility functions
 
 
 async def fetchGW2Data(ctx, functionName):
-    if DataBaseUtils.countQuery(functionName) == 0:
-        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
-        await WebUtils.getGW2ApiData(functionName)
-    await bot.send_message(ctx.message.channel, DataBaseUtils.selectAllQuery(functionName))
+    data = DataBaseUtils.selectAllQuery(functionName)
+    results = "```Here is the list: \n"
+    for item in data:
+        results += "ID: " + str(item[0]) + " Description: " + item[1] + "\n"
+    results += "```"
+    await bot.send_message(ctx.message.channel, results)
 
 """
 Bot Events

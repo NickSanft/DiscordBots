@@ -44,7 +44,7 @@ def cleanTables():
 
 
 def insertQuery(tableName, itemID, itemDescription):
-    con.cursor().execute("INSERT INTO " + tableName +
+    con.cursor().execute("REPLACE INTO " + tableName +
                          " VALUES (?,?)", (itemID, itemDescription))
     con.commit()
 
@@ -106,14 +106,3 @@ def findCurrencyByName(name):
                 ("%" + name.replace(" ", "%") + "%",))
     data = cur.fetchall()
     return data
-
-
-createTables()
-# print(selectAllQuery("items"))
-# print(countQuery("continents"))
-# initDataBase()
-# insertTest()
-# cleanTables()
-# print(selectTest())
-# con.commit()
-# print(findItemByName("Jalis"))
