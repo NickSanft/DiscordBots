@@ -1,4 +1,7 @@
-import discord, sys, random, aiohttp
+import discord
+import sys
+import random
+import aiohttp
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -10,13 +13,14 @@ or simply just memes.
 """
 bot = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
-#TODO See if the list of the commands can be extracted using discord.py...
+# TODO See if the list of the commands can be extracted using discord.py...
 BotCommands = {
     'commands': 'Displays a list of commands. You are in this one, dude.',
     'gw2api': 'the bot looks up something using the Guild Wars 2 API.',
     'gw2wiki': 'the bot looks up your text on the Guild Wars 2 wiki.',
     'say': 'the bot repeats whatever you say'
-    }
+}
+
 
 @bot.event
 async def on_ready():
@@ -25,7 +29,8 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.send_message(discord.Object(id='311702454762995714'), 'I am awake, daddy!')
-    
+
+
 @bot.event
 async def on_read():
     print("bot logged in")
@@ -35,6 +40,7 @@ async def on_read():
 async def say(ctx, *, message):
     await bot.send_message(ctx.message.channel, message)
 
+
 @bot.command(pass_context=True)
 async def emote(ctx, *, message):
     results = ""
@@ -43,11 +49,13 @@ async def emote(ctx, *, message):
             results += ":regional_indicator_" + char.lower() + ":"
         else:
             results += char
-    await bot.send_message(ctx.message.channel, results)    
+    await bot.send_message(ctx.message.channel, results)
+
 
 @bot.command(pass_context=True)
 async def commands(ctx):
     await bot.send_message(ctx.message.channel, getCommands())
+
 
 @bot.group(pass_context=True)
 async def cat(ctx):
@@ -56,12 +64,12 @@ async def cat(ctx):
             js = await r.json()
             await bot.send_message(ctx.message.channel, js['file'])
 
+
 def getCommands():
     result = ""
     for command, description in BotCommands.items():
         result += command + ": " + description + "\n"
     return result
 
+
 bot.run(sys.argv[1])
-
-
