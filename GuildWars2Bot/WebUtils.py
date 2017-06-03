@@ -13,23 +13,14 @@ def make_pretty(func):
        return "```{0}```".format(await func(*args, **kwargs))
    return func_wrapper
 
-def loadItems():
-    itemJSON = getJSON(gw2_api_url + "items")
-    for item in itemJSON:
-        key = str(item)
-        if DataBaseUtils.hasItem(key):
-           print(key + " already exists!")
-        else:
-            itemSoup = getJSON(gw2_api_url + "items?id=" + key)
-            DataBaseUtils.insertQuery("items",item,itemSoup.get('name'))
-
+"""
+Utility Functions
+"""
 async def getJSON(url):
    async with aiohttp.get(url) as r:
       if r.status == 200:
          js = await r.json()
          return js
-    
-
 """
 This is a generic helper method that can be used to get the response from a URL
 as a soup object.
@@ -47,67 +38,46 @@ def getSoup(url):
     soup = bs4.BeautifulSoup(res.text, "html.parser")
     return soup
 
-async def getGW2ApiData(functionName):
-    url = gw2_api_url + functionName
-    soup = await getJSON(url)
-    itemJSON = json.loads(str(soup))
-    print(itemJSON)
-    results = {}
+
+def loadItems():
+    itemJSON = getJSON(gw2_api_url + "items")
     for item in itemJSON:
         key = str(item)
-        itemSoup = json.loads(getJSON(url + "?id=" + key).text)
-        DataBaseUtils.insertQuery(functionName,item,itemSoup.get('name'))
-
-@make_pretty
-async def getItemPrice(name):
-    data = DataBaseUtils.findItemByName(name)
-    
-    if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
-    elif(len(data) < 1):
-         return "No results! Please refine your search."
-    results = ""
-    for item in data:
-        key = str(item[0])
-        url = gw2_api_url + "commerce/prices?id=" + key
-        itemJSON = await getJSON(url)
-        if itemJSON == None:
-            results += "Could not find on the Trading Post! This item is probably untradeable... \n\n"
+        if DataBaseUtils.hasItem(key):
+           print(key + " already exists!")
         else:
-            results += "Item ID: " + key + "\n"
-            results += "Item Description: " + item[1] + "\n"
-            results += "Buy price: " + str(itemJSON.get('buys').get('unit_price') / 10000) + " gold \n"
-            results += "Sell price: " + str(itemJSON.get('sells').get('unit_price') / 10000) + " gold \n\n"
-    return results
+            itemSoup = getJSON(gw2_api_url + "items?id=" + key)
+            DataBaseUtils.insertQuery("items",item,itemSoup.get('name'))
 
-async def getTitles(DiscordID):
+"""
+Guild Wars 2 Wiki-specific functions
+"""
+@make_pretty
+async def getGWWikiHTML(query):
+    result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
+    if result == None:
+        return "an error occurred getting your query, boss: " + query
+    return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
+
+"""
+Guild Wars 2 API-specific functions
+"""
+async def getAccountData(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    result = await getJSON(gw2_api_url + "account?access_token=" + APIKey)
+    return result
+   
+@make_pretty
+async def getAchievements(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
-    titles = await getJSON(gw2_api_url + "account/titles" + AccessToken)
-    titleDescriptions = await getJSON(gw2_api_url + "titles?ids=all")
-    titleDict = {}
-    for description in titleDescriptions:
-       if description.get('id') in titles:
-          titleDict[description.get('id')] = description.get('name')
-    results = "Here are a list of your titles: \n"
-    for title,description in titleDict.items():
-       results += "TitleID: " + str(title) + " Title Desc: " + description + "\n"
-    return results   
-
-@make_pretty
-async def getItemInfoByName(name):
-    data = DataBaseUtils.findItemByName(name)
-    if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
-    elif(len(data) < 1):
-         return "No results! Please refine your search."      
-    results = ""
-    for item in data:
-        key = str(item[0])
-        #url = gw2_api_url + "items?id=" + key
-        #itemPicture = json.loads(getJSON(url).text).get('icon')
-        results += key + ": " + item[1] + "\n"
-    return results
+    acJSON = await getJSON(gw2_api_url + "account/achievements/" + AccessToken)
+    counter = 0
+    for achievement in acJSON:
+       if achievement.get('done'):
+          counter += 1
+    results = "You have: " + str(counter) + " achievements on your account."
+    return results     
 
 #TODO figure out how to better refactor this...
 @make_pretty
@@ -138,68 +108,30 @@ async def getBankCount(DiscordID, name):
        results += "ItemDescription: " + value[0] + "\n"
        results += "ItemCount: " + str(value[1]) + "\n\n"
     return results
-
+   
 @make_pretty
-async def getMaterials(DiscordID, ItemName):
-    data = DataBaseUtils.findItemByName(ItemName)
-    print(data)
-    if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
-    elif(len(data) < 1):
-         return "No results! Please refine your search."
+async def getCats(DiscordID):
+    results = "Here is a list of your cats: \n"
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    AccessToken = "?access_token=" + str(APIKey)
-    itemDict = {}
-    for item in data:
-       itemDict[item[0]] = (item[1],0)    
-    itemJSON = await getJSON(gw2_api_url + "account/materials" + AccessToken)     
-    for item in itemJSON:
-       if item is None:
-         continue
-       itemID = item.get('id')
-       if itemID in itemDict:
-            old_value = itemDict[itemID]
-            new_value = old_value[0],old_value[1] + item.get('count')
-            itemDict[itemID] = new_value
-
-    results = "Here is a list of how many of each item you have in your material storage... \n"          
-    for item in itemDict:
-       value = itemDict[item]
-       results += "ItemID: " + str(item) + "\n"
-       results += "ItemDescription: " + value[0] + "\n"
-       results += "ItemCount: " + str(value[1]) + "\n\n"
-    return results     
-
-#TODO Refactor this with getCharacters
+    catJSON = await getJSON(gw2_api_url + "account/home/cats?access_token=" + APIKey)
+    for cat in catJSON:
+        results += "catID: " + str(cat.get('id')) + ": catName: " + cat.get('hint')+ "\n"
+    return results
+   
 @make_pretty
-async def getWallet(DiscordID, currencyName):
-    if currencyName is not None:
-       data = DataBaseUtils.findCurrencyByName(currencyName)
-       if(len(data) < 1):
-          return "No results! Please refine your search."
-    else:
-       data = DataBaseUtils.selectAllQuery("currencies")
+async def getCharacters(DiscordID):
+    results = "Here is a list of your characters: \n"
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    AccessToken = "?access_token=" + str(APIKey)
-    itemDict = {}
-    for item in data:
-       itemDict[item[0]] = (item[1],0)    
-    itemJSON = await getJSON(gw2_api_url + "account/wallet" + AccessToken)      
-    for item in itemJSON:
-       if item is None:
-         continue
-       itemID = item.get('id')
-       if itemID in itemDict:
-            old_value = itemDict[itemID]
-            new_value = old_value[0],old_value[1] + item.get('value')
-            itemDict[itemID] = new_value
-    results = "Here are the amounts of your requested currencies... \n"          
-    for item in itemDict:
-       value = itemDict[item]
-       results += "ItemID: " + str(item) + "\n"
-       results += "ItemDescription: " + value[0] + "\n"
-       results += "ItemCount: " + str(value[1]) + "\n\n"
-    return results  
+    characterJSON = await getJSON(gw2_api_url + "characters?access_token=" + APIKey)
+    for character in characterJSON:
+        results += character + "\n"
+    return results
+
+@make_pretty                          
+async def getDisplayName(DiscordID):
+    nameJSON = await getAccountData(DiscordID)
+    result = "Your account name is: " + nameJSON.get('name')
+    return result   
 
 #TODO Refactor this with getCharacters
 @make_pretty
@@ -234,7 +166,18 @@ async def getCharacterInventory(DiscordID, ItemName):
        results += "ItemID: " + str(item) + "\n"
        results += "ItemDescription: " + value[0] + "\n"
        results += "ItemCount: " + str(value[1]) + "\n\n"
-    return results
+    return results   
+
+async def getGW2ApiData(functionName):
+    url = gw2_api_url + functionName
+    soup = await getJSON(url)
+    itemJSON = json.loads(str(soup))
+    print(itemJSON)
+    results = {}
+    for item in itemJSON:
+        key = str(item)
+        itemSoup = json.loads(getJSON(url + "?id=" + key).text)
+        DataBaseUtils.insertQuery(functionName,item,itemSoup.get('name'))
 
 @make_pretty
 async def getHeroPoints(DiscordID, charname):
@@ -261,51 +204,75 @@ async def getHeroPoints(DiscordID, charname):
        value = HeroPointDict[character]
        results += "Character: " + str(character) + "\n"
        results += "Hero Points: " + str(value) + "\n\n"
-    return results   
-    
-@make_pretty
-async def getSkins(DiscordID):
-    APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    AccessToken = "?access_token=" + str(APIKey)
-    skinJSON = await getJSON(gw2_api_url + "skins/" + AccessToken)
-    results = "You have: " + str(len(skinJSON)) + " skins unlocked on your account."
     return results           
 
-async def getAccountData(DiscordID):
-    APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    result = await getJSON(gw2_api_url + "account?access_token=" + APIKey)
-    return result
-
 @make_pretty
-async def getWorld(DiscordID):
-    world = await getAccountData(DiscordID)
-    worldJSON = await getJSON(gw2_api_url + "worlds?id=" + str(world.get('world')))
-    result = "Your world is: " + worldJSON.get('name')
-    return result
-
-@make_pretty
-async def getCharacters(DiscordID):
-    results = "Here is a list of your characters: \n"
-    APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    characterJSON = await getJSON(gw2_api_url + "characters?access_token=" + APIKey)
-    for character in characterJSON:
-        results += character + "\n"
+async def getItemInfoByName(name):
+    data = DataBaseUtils.findItemByName(name)
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."      
+    results = ""
+    for item in data:
+        key = str(item[0])
+        #url = gw2_api_url + "items?id=" + key
+        #itemPicture = json.loads(getJSON(url).text).get('icon')
+        results += key + ": " + item[1] + "\n"
     return results
 
 @make_pretty
-async def getCats(DiscordID):
-    results = "Here is a list of your cats: \n"
+async def getItemPrice(name):
+    data = DataBaseUtils.findItemByName(name)
+    
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."
+    results = ""
+    for item in data:
+        key = str(item[0])
+        url = gw2_api_url + "commerce/prices?id=" + key
+        itemJSON = await getJSON(url)
+        if itemJSON == None:
+            results += "Could not find on the Trading Post! This item is probably untradeable... \n\n"
+        else:
+            results += "Item ID: " + key + "\n"
+            results += "Item Description: " + item[1] + "\n"
+            results += "Buy price: " + str(itemJSON.get('buys').get('unit_price') / 10000) + " gold \n"
+            results += "Sell price: " + str(itemJSON.get('sells').get('unit_price') / 10000) + " gold \n\n"
+    return results
+
+@make_pretty
+async def getMaterials(DiscordID, ItemName):
+    data = DataBaseUtils.findItemByName(ItemName)
+    print(data)
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) +  ", max is " + str(maxItems) + ")! Please refine your search."
+    elif(len(data) < 1):
+         return "No results! Please refine your search."
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
-    catJSON = await getJSON(gw2_api_url + "account/home/cats?access_token=" + APIKey)
-    for cat in catJSON:
-        results += "catID: " + str(cat.get('id')) + ": catName: " + cat.get('hint')+ "\n"
-    return results   
-     
-@make_pretty                          
-async def getDisplayName(DiscordID):
-    nameJSON = await getAccountData(DiscordID)
-    result = "Your account name is: " + nameJSON.get('name')
-    return result
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)    
+    itemJSON = await getJSON(gw2_api_url + "account/materials" + AccessToken)     
+    for item in itemJSON:
+       if item is None:
+         continue
+       itemID = item.get('id')
+       if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0],old_value[1] + item.get('count')
+            itemDict[itemID] = new_value
+
+    results = "Here is a list of how many of each item you have in your material storage... \n"          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results
 
 @make_pretty
 async def getRemainingAP(DiscordID):
@@ -318,16 +285,66 @@ async def getRemainingAP(DiscordID):
     return text
 
 @make_pretty
-async def getGWWikiHTML(query):
-    result = getSoup("https://wiki.guildwars2.com/wiki/" + query.replace(" ","_"))
-    if result == None:
-        return "an error occurred getting your query, boss: " + query
-    return result.select("p")[0].getText() + "\n" + result.select("p")[1].getText()
+async def getSkins(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    skinJSON = await getJSON(gw2_api_url + "skins/" + AccessToken)
+    results = "You have: " + str(len(skinJSON)) + " skins unlocked on your account."
+    return results   
+
+async def getTitles(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    titles = await getJSON(gw2_api_url + "account/titles" + AccessToken)
+    titleDescriptions = await getJSON(gw2_api_url + "titles?ids=all")
+    titleDict = {}
+    for description in titleDescriptions:
+       if description.get('id') in titles:
+          titleDict[description.get('id')] = description.get('name')
+    results = "Here are a list of your titles: \n"
+    for title,description in titleDict.items():
+       results += "TitleID: " + str(title) + " Title Desc: " + description + "\n"
+    return results        
+
+#TODO Refactor this with getCharacters
+@make_pretty
+async def getWallet(DiscordID, currencyName):
+    if currencyName is not None:
+       data = DataBaseUtils.findCurrencyByName(currencyName)
+       if(len(data) < 1):
+          return "No results! Please refine your search."
+    else:
+       data = DataBaseUtils.selectAllQuery("currencies")
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+       itemDict[item[0]] = (item[1],0)    
+    itemJSON = await getJSON(gw2_api_url + "account/wallet" + AccessToken)      
+    for item in itemJSON:
+       if item is None:
+         continue
+       itemID = item.get('id')
+       if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0],old_value[1] + item.get('value')
+            itemDict[itemID] = new_value
+    results = "Here are the amounts of your requested currencies... \n"          
+    for item in itemDict:
+       value = itemDict[item]
+       results += "ItemID: " + str(item) + "\n"
+       results += "ItemDescription: " + value[0] + "\n"
+       results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results  
+
+@make_pretty
+async def getWorld(DiscordID):
+    world = await getAccountData(DiscordID)
+    worldJSON = await getJSON(gw2_api_url + "worlds?id=" + str(world.get('world')))
+    result = "Your world is: " + worldJSON.get('name')
+    return result
 
 @make_pretty
 async def gw2Exchange(currencyType, quantity):
-    return await getJSON(gw2_api_url + 'commerce/exchange/'+ currencyType + '?quantity='+ quantity)
-
-#loadItems()
-#getItemInfoByName("Jalis")
+    return await getJSON(gw2_api_url + 'commerce/exchange/'+ currencyType + '?quantity='+ quantity)   
 

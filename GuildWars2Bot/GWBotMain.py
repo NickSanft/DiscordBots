@@ -14,6 +14,18 @@ bot = Bot(command_prefix=commands.when_mentioned_or('!gw2 '),help_attrs=help_att
 
 emotes = ["(／≧ω＼)","(´～｀ヾ)","(๑ÒωÓ๑)","ﾍ(=^･ω･^= )ﾉ","(^･ω･^=)~"]
 
+"""
+Utility functions
+"""
+async def fetchGW2Data(ctx, functionName):
+    if DataBaseUtils.countQuery(functionName) == 0:
+        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
+        await WebUtils.getGW2ApiData(functionName)
+    await bot.send_message(ctx.message.channel, DataBaseUtils.selectAllQuery(functionName))
+
+"""
+Bot Events
+"""
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -26,13 +38,40 @@ async def on_ready():
 async def on_read():
     print("bot logged in")
 
-@bot.command(pass_context=True)
-async def wiki(ctx, *, message):
-    await bot.send_message(ctx.message.channel, await WebUtils.getGWWikiHTML(message))
+"""
+Bot Commands
+"""
+@bot.group(pass_context=True)
+async def achievements(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getAchievements(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @bot.group(pass_context=True)
-async def continents(ctx):
-    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
+async def accountinfo(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getAccountData(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")        
+
+@bot.group(pass_context=True)
+async def bank(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getBankCount(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def cats(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getCats(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")            
 
 @bot.group(pass_context=True)
 async def characters(ctx):
@@ -41,6 +80,72 @@ async def characters(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getCharacters(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def coins(ctx, *, message):
+    currencyType = inspect.getframeinfo(inspect.currentframe()).function
+    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
+
+@bot.group(pass_context=True)
+async def continents(ctx):
+    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
+
+@bot.group(pass_context=True)
+async def currencies(ctx):
+    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
+
+@bot.group(pass_context=True)
+async def dailyap(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getRemainingAP(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def gems(ctx, *, message):
+    currencyType = inspect.getframeinfo(inspect.currentframe()).function
+    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))        
+
+@bot.group(pass_context=True)
+async def hp(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if message == "all":
+        message = None
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getHeroPoints(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")       
+
+@bot.group(pass_context=True)
+async def inventory(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    await bot.send_message(ctx.message.channel, "Please hold on, I need to go through a lot of characters... " + random.choice(emotes))
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getCharacterInventory(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+@bot.group(pass_context=True)
+async def item(ctx, *, message):
+    await bot.send_message(ctx.message.channel, await WebUtils.getItemInfoByName(message))
+
+@bot.group(pass_context=True)
+async def materials(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getMaterials(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")    
+
+@bot.group(pass_context=True)
+async def price(ctx, *, message):
+    await bot.send_message(ctx.message.channel, await WebUtils.getItemPrice(message)) 
+
+@bot.group(pass_context=True)
+async def register(ctx, *, message):
+    DataBaseUtils.registerAPIKey(ctx.message.author.id,ctx.message.author.display_name, message)
+    await bot.send_message(ctx.message.channel, "API Key Registered!")   
 
 @bot.group(pass_context=True)
 async def skins(ctx):
@@ -73,110 +178,6 @@ async def titles(ctx):
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @bot.group(pass_context=True)
-async def currencies(ctx):
-    await fetchGW2Data(ctx, inspect.getframeinfo(inspect.currentframe()).function)
-
-@bot.group(pass_context=True)
-async def item(ctx, *, message):
-    await bot.send_message(ctx.message.channel, await WebUtils.getItemInfoByName(message))    
-
-@bot.group(pass_context=True)
-async def price(ctx, *, message):
-    await bot.send_message(ctx.message.channel, await WebUtils.getItemPrice(message))    
-
-@bot.group(pass_context=True)
-async def register(ctx, *, message):
-    DataBaseUtils.registerAPIKey(ctx.message.author.id,ctx.message.author.display_name, message)
-    await bot.send_message(ctx.message.channel, "API Key Registered!")   
-
-@bot.group(pass_context=True)
-async def name(ctx):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getDisplayName(DiscordID))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-
-@bot.group(pass_context=True)
-async def bank(ctx, *, message):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getBankCount(DiscordID, message))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-
-@bot.group(pass_context=True)
-async def cats(ctx):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getCats(DiscordID))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")        
-
-@bot.group(pass_context=True)
-async def inventory(ctx, *, message):
-    DiscordID = ctx.message.author.id
-    await bot.send_message(ctx.message.channel, "Please hold on, I need to go through a lot of characters... " + random.choice(emotes))
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getCharacterInventory(DiscordID, message))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-
-@bot.group(pass_context=True)
-async def hp(ctx, *, message):
-    DiscordID = ctx.message.author.id
-    if message == "all":
-        message = None
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getHeroPoints(DiscordID, message))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")        
-
-@bot.group(pass_context=True)
-async def materials(ctx, *, message):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getMaterials(DiscordID, message))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-   
-    
-        
-@bot.group(pass_context=True)
-async def accountinfo(ctx):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getAccountData(DiscordID))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-
-@bot.group(pass_context=True)
-async def world(ctx):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getWorld(DiscordID))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
-        
-@bot.group(pass_context=True)
-async def dailyap(ctx):
-    DiscordID = ctx.message.author.id
-    if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getRemainingAP(DiscordID))
-    else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")   
-
-@bot.group(pass_context=True)
-async def coins(ctx, *, message):
-    currencyType = inspect.getframeinfo(inspect.currentframe()).function
-    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
-
-@bot.group(pass_context=True)
-async def gems(ctx, *, message):
-    currencyType = inspect.getframeinfo(inspect.currentframe()).function
-    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
-
-@bot.group(pass_context=True)
 async def wallet(ctx, *, message):
     DiscordID = ctx.message.author.id
     if message == "all":
@@ -186,15 +187,22 @@ async def wallet(ctx, *, message):
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!") 
 
-#print(ctx.message.author.id)
-#print(ctx.message.author.display_name) 
+@bot.command(pass_context=True)
+async def wiki(ctx, *, message):
+    await bot.send_message(ctx.message.channel, await WebUtils.getGWWikiHTML(message))    
 
-async def fetchGW2Data(ctx, functionName):
-    if DataBaseUtils.countQuery(functionName) == 0:
-        await bot.send_message(ctx.message.channel, "Please hold on, this is my first time " + random.choice(emotes))
-        await WebUtils.getGW2ApiData(functionName)
-    await bot.send_message(ctx.message.channel, DataBaseUtils.selectAllQuery(functionName))  
 
+@bot.group(pass_context=True)
+async def world(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getWorld(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+  
+"""
+Init script
+"""
 if len(sys.argv) >= 2:
     bot_token = sys.argv[1]
     bot.run(sys.argv[1])
