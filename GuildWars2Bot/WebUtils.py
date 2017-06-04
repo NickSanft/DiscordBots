@@ -283,6 +283,26 @@ async def getMaterials(DiscordID, ItemName):
 
 
 @make_pretty
+async def getMiniCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    miniJSON = await getJSON(gw2_api_url + "account/minis" + AccessToken)
+    results = "You have: " + str(len(miniJSON)) + \
+        " mini(s) unlocked on your account."
+    return results
+
+
+@make_pretty
+async def getOutfitCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    outfitJSON = await getJSON(gw2_api_url + "account/outfits" + AccessToken)
+    results = "You have: " + str(len(outfitJSON)) + \
+        " outfit(s) unlocked on your account."
+    return results
+
+
+@make_pretty
 async def getRemainingAP(DiscordID):
     accountJSON = await getAccountData(DiscordID)
     result = 15000 - (int(accountJSON.get('daily_ap')) +
@@ -299,9 +319,9 @@ async def getRemainingAP(DiscordID):
 async def getSkins(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
-    skinJSON = await getJSON(gw2_api_url + "skins/" + AccessToken)
+    skinJSON = await getJSON(gw2_api_url + "account/skins" + AccessToken)
     results = "You have: " + str(len(skinJSON)) + \
-        " skins unlocked on your account."
+        " skin(s) unlocked on your account."
     return results
 
 
@@ -319,8 +339,6 @@ async def getTitles(DiscordID):
         results += "TitleID: " + str(title) + \
             " Title Desc: " + description + "\n"
     return results
-
-# TODO Refactor this with getCharacters
 
 
 @make_pretty
