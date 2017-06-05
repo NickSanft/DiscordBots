@@ -129,6 +129,44 @@ async def getCats(DiscordID):
     return results
 
 
+# TODO Refactor this with getCharacters
+
+@make_pretty
+async def getCharacterInventory(DiscordID, ItemName):
+    data = DataBaseUtils.findItemByName(ItemName)
+    if(len(data) > maxItems):
+        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+    elif(len(data) < 1):
+        return "No results! Please refine your search."
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    itemDict = {}
+    for item in data:
+        itemDict[item[0]] = (item[1], 0)
+
+    characterJSON = await getJSON(gw2_api_url + "characters" + AccessToken)
+    for character in characterJSON:
+        characterInv = await getJSON(gw2_api_url + "characters/" + character + "/inventory" + AccessToken)
+        for bag in characterInv.get('bags'):
+            if bag is None:
+                continue
+            for item in bag.get('inventory'):
+                if item is None:
+                    continue
+                itemID = item.get('id')
+                if itemID in itemDict:
+                    old_value = itemDict[itemID]
+                    new_value = old_value[0], old_value[1] + item.get('count')
+                    itemDict[itemID] = new_value
+    results = "Here is a list of how many of each item you have in your character inventories... \n"
+    for item in itemDict:
+        value = itemDict[item]
+        results += "ItemID: " + str(item) + "\n"
+        results += "ItemDescription: " + value[0] + "\n"
+        results += "ItemCount: " + str(value[1]) + "\n\n"
+    return results
+
+
 @make_pretty
 async def getCharacters(DiscordID):
     results = "Here is a list of your characters: \n"
@@ -145,11 +183,9 @@ async def getDisplayName(DiscordID):
     result = "Your account name is: " + nameJSON.get('name')
     return result
 
-# TODO Refactor this with getCharacters
-
 
 @make_pretty
-async def getCharacterInventory(DiscordID, ItemName):
+async def getFullItemCount(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     if(len(data) > maxItems):
         return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
@@ -160,6 +196,20 @@ async def getCharacterInventory(DiscordID, ItemName):
     itemDict = {}
     for item in data:
         itemDict[item[0]] = (item[1], 0)
+
+    # Bank
+    bank_url = gw2_api_url + "account/bank?access_token=" + APIKey
+    bankItems = await getJSON(bank_url)
+    for item in bankItems:
+        if item is None:
+            continue
+        itemID = item.get('id')
+        if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0], old_value[1] + item.get('count')
+            itemDict[itemID] = new_value
+    print(itemDict)
+    # Character Inventory
     characterJSON = await getJSON(gw2_api_url + "characters" + AccessToken)
     for character in characterJSON:
         characterInv = await getJSON(gw2_api_url + "characters/" + character + "/inventory" + AccessToken)
@@ -174,7 +224,19 @@ async def getCharacterInventory(DiscordID, ItemName):
                     old_value = itemDict[itemID]
                     new_value = old_value[0], old_value[1] + item.get('count')
                     itemDict[itemID] = new_value
-    results = "Here is a list of how many of each item you have in your character inventories... \n"
+    print(itemDict)
+    # Materials
+    materialsJSON = await getJSON(gw2_api_url + "account/materials" + AccessToken)
+    for item in materialsJSON:
+        if item is None:
+            continue
+        itemID = item.get('id')
+        if itemID in itemDict:
+            old_value = itemDict[itemID]
+            new_value = old_value[0], old_value[1] + item.get('count')
+            itemDict[itemID] = new_value
+    print(itemDict)
+    results = "Here is a list of how many of each item you have throughout your entire account... \n"
     for item in itemDict:
         value = itemDict[item]
         results += "ItemID: " + str(item) + "\n"
@@ -307,7 +369,7 @@ async def getRemainingAP(DiscordID):
     accountJSON = await getAccountData(DiscordID)
     result = 15000 - (int(accountJSON.get('daily_ap')) +
                       int(accountJSON.get('monthly_ap')))
-    if(result < 15000):
+    if(result > 0):
         text = "You have " + str(result) + " remaining. Only " + \
             str(result / 10) + " more days before the nightmare ends!"
     else:

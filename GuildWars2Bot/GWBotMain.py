@@ -127,6 +127,16 @@ async def dailyap(ctx):
 
 
 @bot.group(pass_context=True)
+async def findall(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    await bot.send_message(ctx.message.channel, "Please hold on, I need to go through a lot of characters... " + random.choice(emotes))
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getFullItemCount(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
 async def gems(ctx, *, message):
     currencyType = inspect.getframeinfo(inspect.currentframe()).function
     await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
