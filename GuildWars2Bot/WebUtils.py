@@ -208,7 +208,6 @@ async def getFullItemCount(DiscordID, ItemName):
             old_value = itemDict[itemID]
             new_value = old_value[0], old_value[1] + item.get('count')
             itemDict[itemID] = new_value
-    print(itemDict)
     # Character Inventory
     characterJSON = await getJSON(gw2_api_url + "characters" + AccessToken)
     for character in characterJSON:
@@ -224,7 +223,6 @@ async def getFullItemCount(DiscordID, ItemName):
                     old_value = itemDict[itemID]
                     new_value = old_value[0], old_value[1] + item.get('count')
                     itemDict[itemID] = new_value
-    print(itemDict)
     # Materials
     materialsJSON = await getJSON(gw2_api_url + "account/materials" + AccessToken)
     for item in materialsJSON:
@@ -235,7 +233,6 @@ async def getFullItemCount(DiscordID, ItemName):
             old_value = itemDict[itemID]
             new_value = old_value[0], old_value[1] + item.get('count')
             itemDict[itemID] = new_value
-    print(itemDict)
     results = "Here is a list of how many of each item you have throughout your entire account... \n"
     for item in itemDict:
         value = itemDict[item]
