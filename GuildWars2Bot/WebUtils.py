@@ -360,6 +360,12 @@ async def getOutfitCount(DiscordID):
         " outfit(s) unlocked on your account."
     return results
 
+async def getQuaggans():
+    quagganJSON = await getJSON(gw2_api_url + "quaggans?ids=all")
+    results = "Here are all the different Quaggan pictures: \n"
+    for quaggan in quagganJSON:
+        results += "ID: " + quaggan.get('id') + " url: " + quaggan.get('url') + "\n"
+    return results
 
 @make_pretty
 async def getRemainingAP(DiscordID):

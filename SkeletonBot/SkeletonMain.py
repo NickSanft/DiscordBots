@@ -15,9 +15,9 @@ bot = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
 # TODO See if the list of the commands can be extracted using discord.py...
 BotCommands = {
+    'cat': 'gives you a random cat picture from the internet.'
     'commands': 'Displays a list of commands. You are in this one, dude.',
-    'gw2api': 'the bot looks up something using the Guild Wars 2 API.',
-    'gw2wiki': 'the bot looks up your text on the Guild Wars 2 wiki.',
+    'emote': 'takes a message and replaces each character with the emoji equivalent.',
     'say': 'the bot repeats whatever you say'
 }
 

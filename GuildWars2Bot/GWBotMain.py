@@ -199,13 +199,26 @@ async def outfits(ctx):
 async def price(ctx, *, message):
     await bot.send_message(ctx.message.channel, await WebUtils.getItemPrice(message))
 
+@bot.group(pass_context=True)
+async def quaggans(ctx):
+    quaggans = await WebUtils.getQuaggans()
+    counter = 0
+    results = "```"
+    for quaggan in quaggans.split("\n"):
+        counter += 1
+        results += quaggan + "\n"
+        if counter >= 30:
+            results += "```"
+            await bot.send_message(ctx.message.channel, results)
+            results = "```"
+            counter = 0
+
 
 @bot.group(pass_context=True)
 async def register(ctx, *, message):
     DataBaseUtils.registerAPIKey(
         ctx.message.author.id, ctx.message.author.display_name, message)
     await bot.send_message(ctx.message.channel, "API Key Registered!")
-
 
 @bot.group(pass_context=True)
 async def skins(ctx):
