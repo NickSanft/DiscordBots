@@ -125,7 +125,17 @@ async def getCats(DiscordID):
     catJSON = await getJSON(gw2_api_url + "account/home/cats?access_token=" + APIKey)
     for cat in catJSON:
         results += "catID: " + str(cat.get('id')) + \
-            ": catName: " + cat.get('hint') + "\n"
+            " catName: " + cat.get('hint') + "\n"
+    return results
+
+
+@make_pretty
+async def getCatHints():
+    results = "Here is a list of cat hints: \n"
+    catJSON = await getJSON(gw2_api_url + "cats?ids=all")
+    for cat in catJSON:
+        results += "catID: " + str(cat.get('id')) + \
+            " catHint: " + cat.get('hint') + "\n"
     return results
 
 
@@ -360,12 +370,15 @@ async def getOutfitCount(DiscordID):
         " outfit(s) unlocked on your account."
     return results
 
+
 async def getQuaggans():
     quagganJSON = await getJSON(gw2_api_url + "quaggans?ids=all")
     results = "Here are all the different Quaggan pictures: \n"
     for quaggan in quagganJSON:
-        results += "ID: " + quaggan.get('id') + " url: " + quaggan.get('url') + "\n"
+        results += "ID: " + quaggan.get('id') + \
+            " url: " + quaggan.get('url') + "\n"
     return results
+
 
 @make_pretty
 async def getRemainingAP(DiscordID):

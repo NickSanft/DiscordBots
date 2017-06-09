@@ -93,6 +93,11 @@ async def cats(ctx):
 
 
 @bot.group(pass_context=True)
+async def cathint(ctx):
+    await bot.send_message(ctx.message.channel, await WebUtils.getCatHints())
+
+
+@bot.group(pass_context=True)
 async def characters(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
@@ -199,6 +204,7 @@ async def outfits(ctx):
 async def price(ctx, *, message):
     await bot.send_message(ctx.message.channel, await WebUtils.getItemPrice(message))
 
+
 @bot.group(pass_context=True)
 async def quaggans(ctx):
     quaggans = await WebUtils.getQuaggans()
@@ -219,6 +225,7 @@ async def register(ctx, *, message):
     DataBaseUtils.registerAPIKey(
         ctx.message.author.id, ctx.message.author.display_name, message)
     await bot.send_message(ctx.message.channel, "API Key Registered!")
+
 
 @bot.group(pass_context=True)
 async def skins(ctx):
