@@ -460,4 +460,16 @@ async def getWorld(DiscordID):
 
 @make_pretty
 async def gw2Exchange(currencyType, quantity):
-    return await getJSON(gw2_api_url + 'commerce/exchange/' + currencyType + '?quantity=' + quantity)
+    currencyJSON = await getJSON(gw2_api_url + 'commerce/exchange/' + currencyType + '?quantity=' + quantity)
+    if currencyType == 'gems':
+        results = "Here are how many coins you could get for " + quantity + " gems:\n"
+        results += "Coins per gem: " + \
+            str(currencyJSON.get('coins_per_gem') / 10000) + " gold \n"
+        results += "Amount: " + \
+            str(currencyJSON.get('quantity') / 10000) + " gold"
+    else:
+        results = "Here are how many gems you could get for " + quantity + " coins: \n"
+        results += "Coins per gem: " + \
+            str(currencyJSON.get('coins_per_gem') / 10000) + " gold \n"
+        results += "Amount: " + str(currencyJSON.get('quantity')) + " gems"
+    return results
