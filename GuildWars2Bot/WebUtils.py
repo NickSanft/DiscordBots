@@ -319,6 +319,16 @@ async def getItemPrice(name):
                     'unit_price') / 10000) + " gold \n\n"
     return results
 
+@make_pretty
+async def getMasteryCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    masteryJSON = await getJSON(gw2_api_url + "account/mastery/points" + AccessToken)
+    results = "You have the following mastery point counts: \n"
+    for mastery in masteryJSON.get('totals'):
+        results += "Region: " + mastery.get('region') + "\n"
+        results += "Spent: " + str(mastery.get('spent')) + " Earned: " + str(mastery.get('earned')) + "\n\n"
+    return results
 
 @make_pretty
 async def getMaterials(DiscordID, ItemName):

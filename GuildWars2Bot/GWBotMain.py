@@ -172,6 +172,13 @@ async def inventory(ctx, *, message):
 async def item(ctx, *, message):
     await bot.send_message(ctx.message.channel, await WebUtils.getItemInfoByName(message))
 
+@bot.group(pass_context=True)
+async def mastery(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getMasteryCount(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 @bot.group(pass_context=True)
 async def materials(ctx, *, message):
