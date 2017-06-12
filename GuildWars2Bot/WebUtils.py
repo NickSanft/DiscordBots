@@ -193,6 +193,15 @@ async def getDisplayName(DiscordID):
     result = "Your account name is: " + nameJSON.get('name')
     return result
 
+@make_pretty
+async def getDyeCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    dyeJSON = await getJSON(gw2_api_url + "account/dyes" + AccessToken)
+    results = "You have: " + str(len(dyeJSON)) + \
+        " dye(s) unlocked on your account."
+    return results
+
 
 @make_pretty
 async def getFullItemCount(DiscordID, ItemName):
@@ -402,9 +411,17 @@ async def getRemainingAP(DiscordID):
         text = "YOU ARE FREE FROM THE NIGHTMARE"
     return text
 
+@make_pretty
+async def getRecipeCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    recipeJSON = await getJSON(gw2_api_url + "account/recipes" + AccessToken)
+    results = "You have: " + str(len(recipeJSON)) + \
+        " recipe(s) unlocked on your account."
+    return results
 
 @make_pretty
-async def getSkins(DiscordID):
+async def getSkinCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     skinJSON = await getJSON(gw2_api_url + "account/skins" + AccessToken)
