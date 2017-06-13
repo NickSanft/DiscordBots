@@ -193,6 +193,7 @@ async def getDisplayName(DiscordID):
     result = "Your account name is: " + nameJSON.get('name')
     return result
 
+
 @make_pretty
 async def getDyeCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
@@ -201,6 +202,15 @@ async def getDyeCount(DiscordID):
     results = "You have: " + str(len(dyeJSON)) + \
         " dye(s) unlocked on your account."
     return results
+
+
+@make_pretty
+async def getFullAccountInfo(DiscordID):
+    accountJSON = await getAccountData(DiscordID)
+    result = "Here is all of your account information: \n"
+    for k, v in accountJSON.items():
+        result += k + ": " + str(v) + "\n"
+    return result
 
 
 @make_pretty
@@ -328,6 +338,7 @@ async def getItemPrice(name):
                     'unit_price') / 10000) + " gold \n\n"
     return results
 
+
 @make_pretty
 async def getMasteryCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
@@ -336,8 +347,10 @@ async def getMasteryCount(DiscordID):
     results = "You have the following mastery point counts: \n"
     for mastery in masteryJSON.get('totals'):
         results += "Region: " + mastery.get('region') + "\n"
-        results += "Spent: " + str(mastery.get('spent')) + " Earned: " + str(mastery.get('earned')) + "\n\n"
+        results += "Spent: " + str(mastery.get('spent')) + \
+            " Earned: " + str(mastery.get('earned')) + "\n\n"
     return results
+
 
 @make_pretty
 async def getMaterials(DiscordID, ItemName):
@@ -411,6 +424,7 @@ async def getRemainingAP(DiscordID):
         text = "YOU ARE FREE FROM THE NIGHTMARE"
     return text
 
+
 @make_pretty
 async def getRecipeCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
@@ -419,6 +433,7 @@ async def getRecipeCount(DiscordID):
     results = "You have: " + str(len(recipeJSON)) + \
         " recipe(s) unlocked on your account."
     return results
+
 
 @make_pretty
 async def getSkinCount(DiscordID):
@@ -482,6 +497,13 @@ async def getWorld(DiscordID):
     world = await getAccountData(DiscordID)
     worldJSON = await getJSON(gw2_api_url + "worlds?id=" + str(world.get('world')))
     result = "Your world is: " + worldJSON.get('name')
+    return result
+
+
+@make_pretty
+async def getWVWRank(DiscordID):
+    accountJSON = await getAccountData(DiscordID)
+    result = "Your WVW Rank is: " + str(accountJSON.get('wvw_rank'))
     return result
 
 

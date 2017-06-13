@@ -69,7 +69,7 @@ async def achievements(ctx):
 async def accountinfo(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
-        await bot.send_message(ctx.message.channel, await WebUtils.getAccountData(DiscordID))
+        await bot.send_message(ctx.message.channel, await WebUtils.getFullAccountInfo(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
@@ -130,6 +130,7 @@ async def dailyap(ctx):
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
+
 @bot.group(pass_context=True)
 async def dyes(ctx):
     DiscordID = ctx.message.author.id
@@ -137,6 +138,7 @@ async def dyes(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getDyeCount(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
 
 @bot.group(pass_context=True)
 async def findall(ctx, *, message):
@@ -179,6 +181,7 @@ async def inventory(ctx, *, message):
 async def item(ctx, *, message):
     await bot.send_message(ctx.message.channel, await WebUtils.getItemInfoByName(message))
 
+
 @bot.group(pass_context=True)
 async def mastery(ctx):
     DiscordID = ctx.message.author.id
@@ -186,6 +189,7 @@ async def mastery(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getMasteryCount(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
 
 @bot.group(pass_context=True)
 async def materials(ctx, *, message):
@@ -201,6 +205,15 @@ async def minis(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getMiniCount(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
+async def name(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getDisplayName(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
@@ -240,6 +253,7 @@ async def register(ctx, *, message):
         ctx.message.author.id, ctx.message.author.display_name, message)
     await bot.send_message(ctx.message.channel, "API Key Registered!")
 
+
 @bot.group(pass_context=True)
 async def recipes(ctx):
     DiscordID = ctx.message.author.id
@@ -247,6 +261,7 @@ async def recipes(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getRecipeCount(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
 
 @bot.group(pass_context=True)
 async def skins(ctx):
@@ -302,6 +317,15 @@ async def world(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getWorld(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
+async def wvw(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getWVWRank(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
