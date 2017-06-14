@@ -344,11 +344,28 @@ async def getMasteryCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     masteryJSON = await getJSON(gw2_api_url + "account/mastery/points" + AccessToken)
-    results = "You have the following mastery point counts: \n"
+    results = "You have the following mastery point counts: \n\n"
     for mastery in masteryJSON.get('totals'):
         results += "Region: " + mastery.get('region') + "\n"
         results += "Spent: " + str(mastery.get('spent')) + \
             " Earned: " + str(mastery.get('earned')) + "\n\n"
+    results += "Individual Masteries: \n\n"
+    individualMasteryJSON = await getJSON(gw2_api_url + "account/masteries" + AccessToken)
+    masteryDescJSON = await getJSON(gw2_api_url + "masteries?ids=all")
+    individualMasteryDict = {}
+    for mastery in individualMasteryJSON:
+        individualMasteryDict[str(mastery.get('id'))] = str(
+            mastery.get('level'))
+    for mastery in masteryDescJSON:
+        masteryID = str(mastery.get('id'))
+        if(masteryID in individualMasteryDict):
+            results += "Mastery ID: " + masteryID + " name: " + \
+                mastery.get('name') + " level: " + \
+                individualMasteryDict[masteryID]
+            # Apparently, mastery levels start at 0 in the API...
+            if len(mastery.get('levels')) <= (int(individualMasteryDict[masteryID]) + 1):
+                results += " (max)"
+            results += "\n"
     return results
 
 
