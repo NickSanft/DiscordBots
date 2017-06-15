@@ -157,6 +157,15 @@ async def gems(ctx, *, message):
 
 
 @bot.group(pass_context=True)
+async def fractals(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getFractalLevel(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
 async def hp(ctx, *, message):
     DiscordID = ctx.message.author.id
     if message == "all":

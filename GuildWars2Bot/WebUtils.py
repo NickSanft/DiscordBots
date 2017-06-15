@@ -205,6 +205,13 @@ async def getDyeCount(DiscordID):
 
 
 @make_pretty
+async def getFractalLevel(DiscordID):
+    accountJSON = await getAccountData(DiscordID)
+    result = "Your Fractal Level is: " + str(accountJSON.get('fractal_level'))
+    return result
+
+
+@make_pretty
 async def getFullAccountInfo(DiscordID):
     accountJSON = await getAccountData(DiscordID)
     result = "Here is all of your account information: \n"
@@ -457,8 +464,10 @@ async def getSkinCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     skinJSON = await getJSON(gw2_api_url + "account/skins" + AccessToken)
+    totalSkinJSON = await getJSON(gw2_api_url + "skins")
     results = "You have: " + str(len(skinJSON)) + \
-        " skin(s) unlocked on your account."
+        " skin(s)" + " out of a possible total of " + \
+        str(len(totalSkinJSON)) + " unlocked on your account."
     return results
 
 

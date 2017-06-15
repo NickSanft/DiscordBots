@@ -72,4 +72,11 @@ def getCommands():
     return result
 
 
-bot.run(sys.argv[1])
+"""
+Init script
+"""
+if len(sys.argv) >= 2:
+    bot_token = sys.argv[1]
+    bot.run(sys.argv[1])
+else:
+    print("A bot token was not provided, the script will now end!!!")
