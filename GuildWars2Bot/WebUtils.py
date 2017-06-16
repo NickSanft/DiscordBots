@@ -454,8 +454,10 @@ async def getRecipeCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     recipeJSON = await getJSON(gw2_api_url + "account/recipes" + AccessToken)
+    totalRecipeJSON = await getJSON(gw2_api_url + "recipes")
     results = "You have: " + str(len(recipeJSON)) + \
-        " recipe(s) unlocked on your account."
+        " recipe(s)" + " out of a possible total of " + \
+        str(len(totalRecipeJSON)) + " unlocked on your account."
     return results
 
 
