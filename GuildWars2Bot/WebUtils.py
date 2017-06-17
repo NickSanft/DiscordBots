@@ -178,6 +178,27 @@ async def getCharacterInventory(DiscordID, ItemName):
 
 
 @make_pretty
+async def getCharacterEquipment(DiscordID, charname):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    CharacterEquipment = {}
+    characterEqJSON = await getJSON(gw2_api_url + "characters/" + charname + "/equipment" + AccessToken)
+    if characterEqJSON is not None:
+        CharacterEquipment[charname] = characterEqJSON
+    else:
+        return "Could not find the character: " + charname + "... Did you get the name wrong?"
+    for character in CharacterEquipment:
+        results = "Here is a list of equipment for " + character + ":\n\n"
+        equipJSON = CharacterEquipment[character]
+        for equipment in equipJSON.get('equipment'):
+            results += equipment.get('slot') + ": "
+            results += DataBaseUtils.findItemNameByID(
+                str(equipment.get('id')))[0]
+            results += "\n"
+    return results
+
+
+@make_pretty
 async def getCharacters(DiscordID):
     results = "Here is a list of your characters: \n"
     APIKey = DataBaseUtils.getAPIKey(DiscordID)

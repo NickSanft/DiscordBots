@@ -100,6 +100,14 @@ def findItemByName(name):
     return data
 
 
+def findItemNameByID(itemID):
+    cur = con.cursor()
+    cur.execute("SELECT ItemDescription FROM items WHERE ItemID = ?",
+                (itemID,))
+    data = cur.fetchall()
+    return data[0]
+
+
 def findCurrencyByName(name):
     cur = con.cursor()
     cur.execute("SELECT * FROM currencies WHERE ItemDescription LIKE ?",

@@ -141,6 +141,15 @@ async def dyes(ctx):
 
 
 @bot.group(pass_context=True)
+async def equip(ctx, *, message):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getCharacterEquipment(DiscordID, message))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
 async def findall(ctx, *, message):
     DiscordID = ctx.message.author.id
     await bot.send_message(ctx.message.channel, "Please hold on, I need to go through a lot of characters... " + random.choice(emotes))
