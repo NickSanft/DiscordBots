@@ -220,8 +220,10 @@ async def getDyeCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     dyeJSON = await getJSON(gw2_api_url + "account/dyes" + AccessToken)
+    totalDyeJSON = await getJSON(gw2_api_url + "colors")
     results = "You have: " + str(len(dyeJSON)) + \
-        " dye(s) unlocked on your account."
+        " dyes(s)" + " out of a possible total of " + \
+        str(len(totalDyeJSON)) + " unlocked on your account."
     return results
 
 
