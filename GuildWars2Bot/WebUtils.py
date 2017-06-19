@@ -445,8 +445,9 @@ async def getOutfitCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     outfitJSON = await getJSON(gw2_api_url + "account/outfits" + AccessToken)
+    outfitTotalJSON = await getJSON(gw2_api_url + "outfits" + AccessToken)
     results = "You have: " + str(len(outfitJSON)) + \
-        " outfit(s) unlocked on your account."
+        " outfit(s) out of a possible total of " + str(len(outfitTotalJSON)) + " unlocked on your account."
     return results
 
 
