@@ -435,8 +435,9 @@ async def getMiniCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     miniJSON = await getJSON(gw2_api_url + "account/minis" + AccessToken)
+    miniTotalJSON = await getJSON(gw2_api_url + "minis" + AccessToken)
     results = "You have: " + str(len(miniJSON)) + \
-        " mini(s) unlocked on your account."
+        " mini(s) out of a possible total of " + str(len(miniTotalJSON)) + " unlocked on your account."
     return results
 
 
