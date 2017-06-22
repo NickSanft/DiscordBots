@@ -302,6 +302,18 @@ async def getFullItemCount(DiscordID, ItemName):
 
 
 @make_pretty
+async def getGliderCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    gliderJSON = await getJSON(gw2_api_url + "account/gliders" + AccessToken)
+    totalGliderJSON = await getJSON(gw2_api_url + "gliders")
+    results = "You have: " + str(len(gliderJSON)) + \
+        " glider(s)" + " out of a possible total of " + \
+        str(len(totalGliderJSON)) + " unlocked on your account."
+    return results
+
+
+@make_pretty
 async def getHeroPoints(DiscordID, charname):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
@@ -437,7 +449,8 @@ async def getMiniCount(DiscordID):
     miniJSON = await getJSON(gw2_api_url + "account/minis" + AccessToken)
     miniTotalJSON = await getJSON(gw2_api_url + "minis" + AccessToken)
     results = "You have: " + str(len(miniJSON)) + \
-        " mini(s) out of a possible total of " + str(len(miniTotalJSON)) + " unlocked on your account."
+        " mini(s) out of a possible total of " + \
+        str(len(miniTotalJSON)) + " unlocked on your account."
     return results
 
 
@@ -448,7 +461,8 @@ async def getOutfitCount(DiscordID):
     outfitJSON = await getJSON(gw2_api_url + "account/outfits" + AccessToken)
     outfitTotalJSON = await getJSON(gw2_api_url + "outfits" + AccessToken)
     results = "You have: " + str(len(outfitJSON)) + \
-        " outfit(s) out of a possible total of " + str(len(outfitTotalJSON)) + " unlocked on your account."
+        " outfit(s) out of a possible total of " + \
+        str(len(outfitTotalJSON)) + " unlocked on your account."
     return results
 
 
