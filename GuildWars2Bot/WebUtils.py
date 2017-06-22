@@ -338,6 +338,16 @@ async def getHeroPoints(DiscordID, charname):
         results += "Hero Points: " + str(value) + "\n\n"
     return results
 
+@make_pretty
+async def getHomeNodes(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    homeNodeJSON = await getJSON(gw2_api_url + "account/home/nodes" + AccessToken)
+    results = "Here are a list of nodes you have in your home: "
+    for node in homeNodeJSON:
+        results += node + "\n"
+    return results
+
 
 @make_pretty
 async def getItemInfoByName(name):
