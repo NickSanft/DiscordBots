@@ -228,6 +228,22 @@ async def getDyeCount(DiscordID):
 
 
 @make_pretty
+async def getFinisherCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    finisherJSON = await getJSON(gw2_api_url + "account/finishers" + AccessToken)
+    finisherCount = 0
+    for finisher in finisherJSON:
+        if finisher.get('permanent'):
+            finisherCount += 1
+    totalFinisherJSON = await getJSON(gw2_api_url + "finishers")
+    results = "You have: " + str(finisherCount) + \
+        " permanent finishers(s)" + " out of a possible total of " + \
+        str(len(totalFinisherJSON)) + " unlocked on your account."
+    return results
+
+
+@make_pretty
 async def getFractalLevel(DiscordID):
     accountJSON = await getAccountData(DiscordID)
     result = "Your Fractal Level is: " + str(accountJSON.get('fractal_level'))
@@ -337,6 +353,7 @@ async def getHeroPoints(DiscordID, charname):
         results += "Character: " + str(character) + "\n"
         results += "Hero Points: " + str(value) + "\n\n"
     return results
+
 
 @make_pretty
 async def getHomeNodes(DiscordID):

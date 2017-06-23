@@ -160,9 +160,12 @@ async def findall(ctx, *, message):
 
 
 @bot.group(pass_context=True)
-async def gems(ctx, *, message):
-    currencyType = inspect.getframeinfo(inspect.currentframe()).function
-    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
+async def finishers(ctx):
+    DiscordID = ctx.message.author.id
+    if DataBaseUtils.hasAPIKey(DiscordID):
+        await bot.send_message(ctx.message.channel, await WebUtils.getFinisherCount(DiscordID))
+    else:
+        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
 
 
 @bot.group(pass_context=True)
@@ -172,6 +175,12 @@ async def fractals(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getFractalLevel(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
+
+@bot.group(pass_context=True)
+async def gems(ctx, *, message):
+    currencyType = inspect.getframeinfo(inspect.currentframe()).function
+    await bot.send_message(ctx.message.channel, await WebUtils.gw2Exchange(currencyType, message))
 
 
 @bot.group(pass_context=True)
@@ -243,6 +252,7 @@ async def name(ctx):
         await bot.send_message(ctx.message.channel, await WebUtils.getDisplayName(DiscordID))
     else:
         await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+
 
 @bot.group(pass_context=True)
 async def nodes(ctx):
