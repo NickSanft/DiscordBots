@@ -132,6 +132,11 @@ async def dailyap(ctx):
 
 
 @bot.group(pass_context=True)
+async def dungeons(ctx):
+    await bot.send_message(ctx.message.channel, await WebUtils.getDungeons())
+
+
+@bot.group(pass_context=True)
 async def dyes(ctx):
     DiscordID = ctx.message.author.id
     if DataBaseUtils.hasAPIKey(DiscordID):

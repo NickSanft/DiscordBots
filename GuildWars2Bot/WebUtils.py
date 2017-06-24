@@ -216,6 +216,15 @@ async def getDisplayName(DiscordID):
 
 
 @make_pretty
+async def getDungeons():
+    results = "Here is a list of dungeons; maybe ANet will make more one day... \n"
+    dungeonJSON = await getJSON(gw2_api_url + "dungeons")
+    for dungeon in dungeonJSON:
+        results += dungeon + "\n"
+    return results
+
+
+@make_pretty
 async def getDyeCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
