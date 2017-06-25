@@ -418,6 +418,18 @@ async def getItemPrice(name):
 
 
 @make_pretty
+async def getMailCarrierCount(DiscordID):
+    APIKey = DataBaseUtils.getAPIKey(DiscordID)
+    AccessToken = "?access_token=" + str(APIKey)
+    mailCarrierJSON = await getJSON(gw2_api_url + "account/mailcarriers" + AccessToken)
+    totalMailCarrierJSON = await getJSON(gw2_api_url + "mailcarriers")
+    results = "You have: " + str(len(mailCarrierJSON)) + \
+        " mail carrier(s)" + " out of a possible total of " + \
+        str(len(totalMailCarrierJSON)) + " unlocked on your account."
+    return results
+
+
+@make_pretty
 async def getMasteryCount(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
