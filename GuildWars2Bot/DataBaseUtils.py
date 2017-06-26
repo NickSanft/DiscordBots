@@ -15,11 +15,11 @@ def initDataBase():
 
 def dropTables():
     cur = con.cursor()
-    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-    for row in cur:
+    cur.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite%'")
+    for row in cur.fetchall():
         query = "DROP TABLE IF EXISTS " + row[0]
-        print(query)
-        con.cursor().execute(query)
+        cur.execute(query)
         con.commit()
 
 
