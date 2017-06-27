@@ -4,6 +4,7 @@ import json
 import DataBaseUtils
 import aiohttp
 from collections import defaultdict
+import Strings
 
 gw2_api_url = "https://api.guildwars2.com/v2/"
 maxItems = 30
@@ -230,9 +231,8 @@ async def getDyeCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     dyeJSON = await getJSON(gw2_api_url + "account/dyes" + AccessToken)
     totalDyeJSON = await getJSON(gw2_api_url + "colors")
-    results = "You have: " + str(len(dyeJSON)) + \
-        " dyes(s)" + " out of a possible total of " + \
-        str(len(totalDyeJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(dyeJSON)), "dye", str(len(totalDyeJSON)))
     return results
 
 
@@ -246,9 +246,8 @@ async def getFinisherCount(DiscordID):
         if finisher.get('permanent'):
             finisherCount += 1
     totalFinisherJSON = await getJSON(gw2_api_url + "finishers")
-    results = "You have: " + str(finisherCount) + \
-        " permanent finishers(s)" + " out of a possible total of " + \
-        str(len(totalFinisherJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(finisherCount), "permanent finisher", str(len(totalFinisherJSON)))
     return results
 
 
@@ -332,9 +331,8 @@ async def getGliderCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     gliderJSON = await getJSON(gw2_api_url + "account/gliders" + AccessToken)
     totalGliderJSON = await getJSON(gw2_api_url + "gliders")
-    results = "You have: " + str(len(gliderJSON)) + \
-        " glider(s)" + " out of a possible total of " + \
-        str(len(totalGliderJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(gliderJSON)), "glider", str(len(totalGliderJSON)))
     return results
 
 
@@ -423,9 +421,8 @@ async def getMailCarrierCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     mailCarrierJSON = await getJSON(gw2_api_url + "account/mailcarriers" + AccessToken)
     totalMailCarrierJSON = await getJSON(gw2_api_url + "mailcarriers")
-    results = "You have: " + str(len(mailCarrierJSON)) + \
-        " mail carrier(s)" + " out of a possible total of " + \
-        str(len(totalMailCarrierJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(mailCarrierJSON)), "mail carrier", str(len(totalMailCarrierJSON)))
     return results
 
 
@@ -496,9 +493,8 @@ async def getMiniCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     miniJSON = await getJSON(gw2_api_url + "account/minis" + AccessToken)
     miniTotalJSON = await getJSON(gw2_api_url + "minis" + AccessToken)
-    results = "You have: " + str(len(miniJSON)) + \
-        " mini(s) out of a possible total of " + \
-        str(len(miniTotalJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(miniJSON)), "mini", str(len(miniTotalJSON)))
     return results
 
 
@@ -508,9 +504,8 @@ async def getOutfitCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     outfitJSON = await getJSON(gw2_api_url + "account/outfits" + AccessToken)
     outfitTotalJSON = await getJSON(gw2_api_url + "outfits" + AccessToken)
-    results = "You have: " + str(len(outfitJSON)) + \
-        " outfit(s) out of a possible total of " + \
-        str(len(outfitTotalJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(outfitJSON)), "outfit", str(len(outfitTotalJSON)))
     return results
 
 
@@ -542,9 +537,8 @@ async def getRecipeCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     recipeJSON = await getJSON(gw2_api_url + "account/recipes" + AccessToken)
     totalRecipeJSON = await getJSON(gw2_api_url + "recipes")
-    results = "You have: " + str(len(recipeJSON)) + \
-        " recipe(s)" + " out of a possible total of " + \
-        str(len(totalRecipeJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(recipeJSON)), "recipe", str(len(totalRecipeJSON)))
     return results
 
 
@@ -554,9 +548,8 @@ async def getSkinCount(DiscordID):
     AccessToken = "?access_token=" + str(APIKey)
     skinJSON = await getJSON(gw2_api_url + "account/skins" + AccessToken)
     totalSkinJSON = await getJSON(gw2_api_url + "skins")
-    results = "You have: " + str(len(skinJSON)) + \
-        " skin(s)" + " out of a possible total of " + \
-        str(len(totalSkinJSON)) + " unlocked on your account."
+    results = Strings.all["count_with_total"].format(
+        str(len(skinJSON)), "skin", str(len(totalSkinJSON)))
     return results
 
 
@@ -626,14 +619,9 @@ async def getWVWRank(DiscordID):
 async def gw2Exchange(currencyType, quantity):
     currencyJSON = await getJSON(gw2_api_url + 'commerce/exchange/' + currencyType + '?quantity=' + quantity)
     if currencyType == 'gems':
-        results = "Here are how many coins you could get for " + quantity + " gems:\n"
-        results += "Coins per gem: " + \
-            str(currencyJSON.get('coins_per_gem') / 10000) + " gold \n"
-        results += "Amount: " + \
-            str(currencyJSON.get('quantity') / 10000) + " gold"
+        results = Strings.all["exchange"].format("coins", quantity, "gems", str(currencyJSON.get(
+            'coins_per_gem') / 10000), str(currencyJSON.get('quantity') / 10000), "gold")
     else:
-        results = "Here are how many gems you could get for " + quantity + " coins: \n"
-        results += "Coins per gem: " + \
-            str(currencyJSON.get('coins_per_gem') / 10000) + " gold \n"
-        results += "Amount: " + str(currencyJSON.get('quantity')) + " gems"
+        results = Strings.all["exchange"].format("gems", quantity, "coins", str(currencyJSON.get(
+            'coins_per_gem') / 10000), str(currencyJSON.get('quantity') / 10000), "gems")
     return results
