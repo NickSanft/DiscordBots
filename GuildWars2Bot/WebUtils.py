@@ -94,9 +94,9 @@ async def getBankCount(DiscordID, name):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     data = DataBaseUtils.findItemByName(name)
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     itemDict = {}
     for item in data:
         itemDict[item[0]] = (item[1], 0)
@@ -146,9 +146,9 @@ async def getCatHints():
 async def getCharacterInventory(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     itemDict = {}
@@ -271,9 +271,9 @@ async def getFullAccountInfo(DiscordID):
 async def getFullItemCount(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     itemDict = {}
@@ -377,9 +377,9 @@ async def getHomeNodes(DiscordID):
 async def getItemInfoByName(name):
     data = DataBaseUtils.findItemByName(name)
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     results = ""
     for item in data:
         key = str(item[0])
@@ -394,9 +394,9 @@ async def getItemPrice(name):
     data = DataBaseUtils.findItemByName(name)
 
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     results = ""
     for item in data:
         key = str(item[0])
@@ -460,9 +460,9 @@ async def getMasteryCount(DiscordID):
 async def getMaterials(DiscordID, ItemName):
     data = DataBaseUtils.findItemByName(ItemName)
     if(len(data) > maxItems):
-        return "Too many results (got " + str(len(data)) + ", max is " + str(maxItems) + ")! Please refine your search."
+        return Strings.all["too_many_items"].format(str(len(data)), str(maxItems))
     elif(len(data) < 1):
-        return "No results! Please refine your search."
+        return Strings.all["no_results"]
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     itemDict = {}
@@ -574,7 +574,7 @@ async def getWallet(DiscordID, currencyName):
     if currencyName is not None:
         data = DataBaseUtils.findCurrencyByName(currencyName)
         if(len(data) < 1):
-            return "No results! Please refine your search."
+            return Strings.all["no_results"]
     else:
         data = DataBaseUtils.selectAllQuery("currencies")
     APIKey = DataBaseUtils.getAPIKey(DiscordID)

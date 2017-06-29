@@ -4,6 +4,7 @@ import WebUtils
 import inspect
 import random
 import DataBaseUtils
+import Strings
 from discord.ext import commands
 from discord.ext.commands import Bot
 
@@ -62,7 +63,7 @@ async def achievements(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getAchievements(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -71,7 +72,7 @@ async def accountinfo(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getFullAccountInfo(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -80,7 +81,7 @@ async def bank(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getBankCount(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, Strings.all)
 
 
 @bot.group(pass_context=True)
@@ -89,7 +90,7 @@ async def cats(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getCats(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -103,7 +104,7 @@ async def characters(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getCharacters(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -128,7 +129,7 @@ async def dailyap(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getRemainingAP(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -142,7 +143,7 @@ async def dyes(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getDyeCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -151,7 +152,7 @@ async def equip(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getCharacterEquipment(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -161,7 +162,7 @@ async def findall(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getFullItemCount(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -170,7 +171,7 @@ async def finishers(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getFinisherCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -179,7 +180,7 @@ async def fractals(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getFractalLevel(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -194,7 +195,7 @@ async def gliders(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getGliderCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -205,7 +206,7 @@ async def hp(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getHeroPoints(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -215,7 +216,7 @@ async def inventory(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getCharacterInventory(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -229,7 +230,7 @@ async def mailcarriers(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getMailCarrierCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -238,7 +239,7 @@ async def mastery(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getMasteryCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -247,7 +248,7 @@ async def materials(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getMaterials(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -256,7 +257,7 @@ async def minis(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getMiniCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -265,7 +266,7 @@ async def name(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getDisplayName(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -274,7 +275,7 @@ async def nodes(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getHomeNodes(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -283,7 +284,7 @@ async def outfits(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getOutfitCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -319,7 +320,7 @@ async def recipes(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getRecipeCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -328,7 +329,7 @@ async def skins(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getSkinCount(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 """
 Gets a list of titles. This needs to be chunked, as the results are too large
@@ -352,7 +353,7 @@ async def titles(ctx):
                 results = "```"
                 counter = 0
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -363,7 +364,7 @@ async def wallet(ctx, *, message):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getWallet(DiscordID, message))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.command(pass_context=True)
@@ -377,7 +378,7 @@ async def world(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getWorld(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 
 @bot.group(pass_context=True)
@@ -386,7 +387,7 @@ async def wvw(ctx):
     if DataBaseUtils.hasAPIKey(DiscordID):
         await bot.send_message(ctx.message.channel, await WebUtils.getWVWRank(DiscordID))
     else:
-        await bot.send_message(ctx.message.channel, "API Key Not Registered!")
+        await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
 """
 Init script
