@@ -519,6 +519,15 @@ async def getQuaggans():
 
 
 @make_pretty
+async def getRaces():
+    results = "Here is a list of races; maybe ANet will make more one day... \n"
+    raceJSON = await getJSON(gw2_api_url + "races")
+    for race in raceJSON:
+        results += race + "\n"
+    return results
+
+
+@make_pretty
 async def getRemainingAP(DiscordID):
     accountJSON = await getAccountData(DiscordID)
     result = 15000 - (int(accountJSON.get('daily_ap')) +

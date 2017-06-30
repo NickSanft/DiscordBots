@@ -308,6 +308,11 @@ async def quaggans(ctx):
 
 
 @bot.group(pass_context=True)
+async def races(ctx):
+    await bot.send_message(ctx.message.channel, await WebUtils.getRaces())
+
+
+@bot.group(pass_context=True)
 async def register(ctx, *, message):
     DataBaseUtils.registerAPIKey(
         ctx.message.author.id, ctx.message.author.display_name, message)
