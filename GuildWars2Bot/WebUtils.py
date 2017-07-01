@@ -526,6 +526,20 @@ async def getRaces():
         results += race + "\n"
     return results
 
+@make_pretty
+async def getRaids():
+    results = "Here is a list of raids and their bosses: \n"
+    raidJSON = await getJSON(gw2_api_url + "raids?ids=all")
+    for raid in raidJSON:
+        results += "Raid Name: " + raid.get('id') + "\n\n"
+        for wing in raid.get('wings'):
+            results += "Wing Name: " + wing.get('id') + "\n"
+            for event in wing.get('events'):
+                if event.get('type') == "Boss":
+                    results += "Boss: " + event.get('id') + "\n"
+            results += "\n"
+    return results
+
 
 @make_pretty
 async def getRemainingAP(DiscordID):

@@ -311,6 +311,9 @@ async def quaggans(ctx):
 async def races(ctx):
     await bot.send_message(ctx.message.channel, await WebUtils.getRaces())
 
+@bot.group(pass_context=True)
+async def raids(ctx):
+    await bot.send_message(ctx.message.channel, await WebUtils.getRaids())
 
 @bot.group(pass_context=True)
 async def register(ctx, *, message):
