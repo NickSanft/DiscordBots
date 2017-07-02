@@ -367,9 +367,12 @@ async def getHomeNodes(DiscordID):
     APIKey = DataBaseUtils.getAPIKey(DiscordID)
     AccessToken = "?access_token=" + str(APIKey)
     homeNodeJSON = await getJSON(gw2_api_url + "account/home/nodes" + AccessToken)
+    totalNodeJSON = await getJSON(gw2_api_url + "nodes")
     results = "Here are a list of nodes you have in your home: "
     for node in homeNodeJSON:
         results += node + "\n"
+    results += "\n" + Strings.all["count_with_total"].format(
+        str(len(homeNodeJSON)), "nodes", str(len(totalNodeJSON)))
     return results
 
 
