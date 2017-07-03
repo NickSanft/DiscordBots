@@ -511,6 +511,13 @@ async def getOutfitCount(DiscordID):
         str(len(outfitJSON)), "outfit", str(len(outfitTotalJSON)))
     return results
 
+@make_pretty
+async def getProfessions():
+    results = "Here is a list of professions; maybe ANet will make more one day... \n"
+    profJSON = await getJSON(gw2_api_url + "professions")
+    for prof in profJSON:
+        results += prof + "\n"
+    return results
 
 async def getQuaggans():
     quagganJSON = await getJSON(gw2_api_url + "quaggans?ids=all")
