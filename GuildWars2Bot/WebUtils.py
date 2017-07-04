@@ -218,7 +218,7 @@ async def getDisplayName(DiscordID):
 
 @make_pretty
 async def getDungeons():
-    results = "Here is a list of dungeons; maybe ANet will make more one day... \n"
+    results = Strings.all["list"].format("dungeons") + " \n"
     dungeonJSON = await getJSON(gw2_api_url + "dungeons")
     for dungeon in dungeonJSON:
         results += dungeon + "\n"
@@ -511,13 +511,15 @@ async def getOutfitCount(DiscordID):
         str(len(outfitJSON)), "outfit", str(len(outfitTotalJSON)))
     return results
 
+
 @make_pretty
 async def getProfessions():
-    results = "Here is a list of professions; maybe ANet will make more one day... \n"
+    results = Strings.all["list"].format("professions") + " \n"
     profJSON = await getJSON(gw2_api_url + "professions")
     for prof in profJSON:
         results += prof + "\n"
     return results
+
 
 async def getQuaggans():
     quagganJSON = await getJSON(gw2_api_url + "quaggans?ids=all")
@@ -530,11 +532,12 @@ async def getQuaggans():
 
 @make_pretty
 async def getRaces():
-    results = "Here is a list of races; maybe ANet will make more one day... \n"
+    results = Strings.all["list"].format("races") + " \n"
     raceJSON = await getJSON(gw2_api_url + "races")
     for race in raceJSON:
         results += race + "\n"
     return results
+
 
 @make_pretty
 async def getRaids():

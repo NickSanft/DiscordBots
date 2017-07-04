@@ -286,9 +286,11 @@ async def outfits(ctx):
     else:
         await bot.send_message(ctx.message.channel, String.all["no_api_key"])
 
+
 @bot.group(pass_context=True)
 async def professions(ctx):
     await bot.send_message(ctx.message.channel, await WebUtils.getProfessions())
+
 
 @bot.group(pass_context=True)
 async def price(ctx, *, message):
@@ -314,9 +316,11 @@ async def quaggans(ctx):
 async def races(ctx):
     await bot.send_message(ctx.message.channel, await WebUtils.getRaces())
 
+
 @bot.group(pass_context=True)
 async def raids(ctx):
     await bot.send_message(ctx.message.channel, await WebUtils.getRaids())
+
 
 @bot.group(pass_context=True)
 async def register(ctx, *, message):
