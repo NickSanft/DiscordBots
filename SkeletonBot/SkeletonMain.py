@@ -15,7 +15,7 @@ bot = Bot(command_prefix=commands.when_mentioned_or('!skeleton '))
 
 # TODO See if the list of the commands can be extracted using discord.py...
 BotCommands = {
-    'cat': 'gives you a random cat picture from the internet.'
+    'cat': 'gives you a random cat picture from the internet.',
     'commands': 'Displays a list of commands. You are in this one, dude.',
     'emote': 'takes a message and replaces each character with the emoji equivalent.',
     'say': 'the bot repeats whatever you say'
@@ -57,12 +57,14 @@ async def commands(ctx):
     await bot.send_message(ctx.message.channel, getCommands())
 
 
-@bot.group(pass_context=True)
+@bot.command(pass_context=True)
 async def cat(ctx):
-    async with aiohttp.get('http://random.cat/meow') as r:
+    async with aiohttp.get('https://aws.random.cat/meow') as r:
         if r.status == 200:
             js = await r.json()
             await bot.send_message(ctx.message.channel, js['file'])
+        else:
+            await bot.send_message(ctx.message.channel, "Could not get the file: " + str(js['file']))
 
 
 def getCommands():
