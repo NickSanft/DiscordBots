@@ -23,6 +23,7 @@ BotCommands = {
     'cat': 'gives you a random cat picture from the internet.',
     'commands': 'Displays a list of commands. You are in this one, dude.',
     'emote': 'takes a message and replaces each character with the emoji equivalent.',
+    'games': 'find out the games releasing in the next week.',
     'say': 'the bot repeats whatever you say'
 }
 
@@ -115,9 +116,10 @@ async def cat(ctx):
 
 
 def getCommands():
-    result = ""
+    result = "```"
     for command, description in BotCommands.items():
         result += command + ": " + description + "\n"
+    result += "```"
     return result
 
 def secondsToDate(ms):
