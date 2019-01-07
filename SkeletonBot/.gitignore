@@ -1,3 +1,5 @@
+token.json
+credentials.json
 test.db
 test.db-journal
 __pycache__
